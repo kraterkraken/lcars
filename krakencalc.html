@@ -72,6 +72,9 @@
             sup {
                 font-size: 15px;
             }
+            sub {
+                font-size: 15px;
+            }
 
             /********** COLORS AND BORDERS **********/
             .calc {border: 1px solid black;}
@@ -362,6 +365,10 @@
                 {
                     storeFloat(Math.log(retrieveFloat()));
                 }
+                else if (input == "log10")
+                {
+                    storeFloat(Math.log10(retrieveFloat()));
+                }
                 else if (input == "factorial")
                 {
                     let n = retrieveFloat();
@@ -568,7 +575,7 @@
                 <button id="sin" class="funbtn">sin</button>
                 <button id="cos" class="funbtn">cos</button>
                 <button id="tan" class="funbtn">tan</button>
-                <button id="ee" class="funbtn">EE</button>
+                <button id="log10" class="funbtn">log<sub>10</sub></button>
                 <button id="4" class="numbtn">4</button>
                 <button id="5" class="numbtn">5</button>
                 <button id="6" class="numbtn">6</button>
@@ -589,7 +596,7 @@
                 <button id="e" class="funbtn">e</button>
                 <button id="0" class="numbtn">0</button>
                 <button id="." class="numbtn">.</button>
-                <button id="ans" class="numbtn">ANS</button>
+                <button id="ee" class="numbtn">EE</button>
 
 
 
