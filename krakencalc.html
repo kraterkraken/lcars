@@ -194,9 +194,11 @@
             function resetState()
             {
                 storeFloat("0");
-                floatStack = new Array();
-                ans = "";
+                floatStack = new Array;
                 startNewNumber = true;
+                secondFunc = false;
+                drgMode = "DEG";
+                dispMode = "STD";
             }
 
             function radsFromDRG(f)
@@ -512,6 +514,12 @@
 
             }
 
+            // LOAD HANDLER - make sure the state is reset
+            window.addEventListener("load", function(e)
+            {
+                resetState();
+                memory = 0;
+            });
             // BUTTON HANDLER - handles every click of every button
             window.onclick = function(e)
             {
