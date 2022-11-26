@@ -1,2 +1,2 @@
 # krakencalc
-Nifty web-based scientific calculator
+A nifty web-based scientific calculator written in HTML, CSS, and Javascript.
