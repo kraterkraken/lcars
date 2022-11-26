@@ -452,6 +452,9 @@
                 }
                 else if (input == "2nd")
                 {
+                    // we just pushed the 2nd function button, so flip the indicator
+                    secondFunc = !secondFunc;
+
                     let elts = new Array();
                     elts.push(document.getElementById("sin"));
                     elts.push(document.getElementById("cos"));
@@ -460,24 +463,26 @@
                     elts.push(document.getElementById("cosh"));
                     elts.push(document.getElementById("tanh"));
                     let elt2nd = document.getElementById("2nd");
-                    let str = "<sup>-1</sup>";
-                    for (let i in elts)
+                    let invstr = "<sup>-1</sup>";
+                    for (let elt of elts)
                     {
                         if (secondFunc)
                         {
-                            let h = elts[i].innerHTML;
-                            elts[i].innerHTML = h.slice(0, h.length - str.length);
+                            // if we are now in 2nd function mode, change the
+                            // button labels to be the inverses
+                            elt.innerHTML += invstr;
                         }
                         else
                         {
-                            elts[i].innerHTML += str;
+                            // if we aren't in 2nd function mode anymore, change
+                            // the button labels to be the normal functions
+                            elt.innerHTML = elt.innerHTML.replace(invstr, "");
                         }
                     }
 
-                    elt2nd.className = secondFunc? "modebtn" : "modebtnpushed";
-
-                    secondFunc = !secondFunc;
-
+                    // use a different style for the 2nd function button
+                    // based on whether we are in 2nd function mode or not
+                    elt2nd.className = secondFunc? "modebtnpushed" : "modebtn";
                 }
                 // ========== HANDLE MEMORY FUNCTIONS ==========
                 else if (input == "mc")
