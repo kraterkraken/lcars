@@ -38,7 +38,7 @@
             }
             .modedisplay {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
             }
 
             /********** POSITIONS, SIZES, AND FONTS **********/
@@ -109,7 +109,7 @@
             var startNewNumber = true;
             var secondFunc = false;
             var drgMode = "DEG";
-            var dispMode = "NORMAL";
+            var dispMode = "STD";
 
             const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
             const binaryOps = ['mult','div','add','sub','yroot','ypower','ee','mod'];
@@ -137,9 +137,9 @@
                 "GRAD": "DEG"
             };
             const dispToggler = {
-                "NORMAL": "SCI",
+                "STD": "SCI",
                 "SCI": "ENG",
-                "ENG": "NORMAL"
+                "ENG": "STD"
             };
 
             const radianConvFactor = {
@@ -396,7 +396,7 @@
                         let sci = retrieveFloat().toExponential();
                         storeFloat(sci);
                     }
-                    else if (dispMode == "NORMAL")
+                    else if (dispMode == "STD")
                     {
                         let arr = retrieveString().split("e");
                         if (arr.length == 2)
@@ -540,8 +540,10 @@
         <div class="calc">
             <input id="calcdisplay" type="text" class="calcdisplay" value="0" disabled>
             <div id="modedisplay" class="modedisplay">
+                <div></div>
                 <div id="drgbox" class="drgbox">DEG</div>
-                <div id="dispbox" class="dispbox">NORMAL</div>
+                <div id="dispbox" class="dispbox">STD</div>
+                <div></div><div></div><div></div><div></div><div></div>
             </div>
             <div class="buttongrid">
 
