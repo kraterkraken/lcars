@@ -113,29 +113,27 @@
             const trigOps = ['sin','cos','tan','sinh','cosh','tanh'];
             const modes = ['2nd','drg','disp'];
 
-            var trigFuncs = {
+            const trigFuncs = {
                 "sin": Math.sin,
                 "cos": Math.cos,
                 "tan": Math.tan,
                 "sinh": Math.sinh,
                 "cosh": Math.cosh,
-                "tanh": Math.tanh
-            };
-            var invTrigFuncs = {
-                "sin": Math.asin,
-                "cos": Math.acos,
-                "tan": Math.atan,
-                "sinh": Math.asinh,
-                "cosh": Math.acosh,
-                "tanh": Math.atanh
+                "tanh": Math.tanh,
+                "asin": Math.asin,
+                "acos": Math.acos,
+                "atan": Math.atan,
+                "asinh": Math.asinh,
+                "acosh": Math.acosh,
+                "atanh": Math.atanh
             }
 
-            var drgToggler = {
+            const drgToggler = {
                 "DEG": "RAD",
                 "RAD": "GRAD",
                 "GRAD": "DEG"
             };
-            var dispToggler = {
+            const dispToggler = {
                 "NORMAL": "SCI",
                 "SCI": "ENG",
                 "ENG": "NORMAL"
@@ -247,17 +245,13 @@
             function processTrig(funcName)
             {
                 // The funcName parameter is the name of the trig function being utilized.
-                // It will never be the inverse functions such as asin, it will just be
-                // sin, cos, tan, sinh, cosh, tanh.  The "secondFunc" global controls
-                // whether or not to do the inverse functions.
-
                 let result;
                 let temp;
 
                 // if inverse, call inverse trig function and convert radian result to drg
                 if (secondFunc)
                 {
-                    temp = invTrigFuncs[funcName](retrieveFloat());
+                    temp = trigFuncs[funcName](retrieveFloat());
                     result = drgFromRads(temp);
                 }
                 // if not inverse, convert number to radians and call trig function
@@ -339,9 +333,6 @@
                 // start a new number.
                 startNewNumber = true;
 
-                // set up the trigonometry functions
-                let funcs = secondFunc? invTrigFuncs : trigFuncs;
-
                 if (binaryOps.includes(input))
                 {
                     // We just got a binary operation.  Push it onto the stack
@@ -364,7 +355,8 @@
                 // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
                 else if (trigOps.includes(input))
                 {
-                    processTrig(input);
+                    let prefix = (secondFunc)? "a" : "";
+                    processTrig(prefix + input);
                 }
                 else if (input == "multinv")
                 {
