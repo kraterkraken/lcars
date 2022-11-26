@@ -191,14 +191,11 @@
                 return parseFloat(retrieveString());
             }
 
-            function resetState()
+            function allClear()
             {
                 storeFloat("0");
                 floatStack = new Array;
                 startNewNumber = true;
-                secondFunc = false;
-                drgMode = "DEG";
-                dispMode = "STD";
             }
 
             function radsFromDRG(f)
@@ -345,7 +342,7 @@
                 }
                 else if (input == "ac")
                 {
-                    resetState();
+                    allClear();
                 }
                 else if (input == "del")
                 {
@@ -517,8 +514,11 @@
             // LOAD HANDLER - make sure the state is reset
             window.addEventListener("load", function(e)
             {
-                resetState();
+                allClear();
                 memory = 0;
+                secondFunc = false;
+                drgMode = "DEG";
+                dispMode = "STD";
             });
             // BUTTON HANDLER - handles every click of every button
             window.onclick = function(e)
