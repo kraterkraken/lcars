@@ -139,6 +139,12 @@
                 "ENG": "NORMAL"
             };
 
+            const radianConvFactor = {
+                "DEG": (Math.PI / 180.0), // converts degrees to radians
+                "RAD": 1,                 // converts radians to radians
+                "GRAD": (Math.PI / 200.0) // converts gradians to radians
+            };
+
             function debugState()
             {
                 if (!debug) return;
@@ -182,33 +188,11 @@
 
             function radsFromDRG(f)
             {
-                if (drgMode == "DEG")
-                {
-                    return f * Math.PI / 180.0;
-                }
-                else if (drgMode == "RAD")
-                {
-                    return f;
-                }
-                else if (drgMode == "GRAD")
-                {
-                    return f * Math.PI / 200.0;
-                }
+                return f * radianConvFactor[drgMode];
             }
             function drgFromRads(f)
             {
-                if (drgMode == "DEG")
-                {
-                    return f * 180.0 / Math.PI;
-                }
-                else if (drgMode == "RAD")
-                {
-                    return f;
-                }
-                else if (drgMode == "GRAD")
-                {
-                    return f * 200.0 / Math.PI;
-                }
+                return f / radianConvFactor[drgMode];
             }
 
             function processNumber(input)
