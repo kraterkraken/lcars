@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>KrakenCalc</title>
+        <style>
+            /********** CSS RESET **********/
+            html {
+                box-sizing: border-box;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: inherit;
+                font-family: "Courier New";
+                font-size: 25px;
+                font-weight: bold;
+                border-radius: 3px;
+            }
+            button:hover {
+                filter: brightness(92%);
+            }
+            button:active {
+                filter: brightness(82%);
+            }
+
+            /********* GRID STUFF ********/
+            .buttongrid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+                grid-row-gap: 5px;
+                grid-column-gap: 5px;
+            }
+            .eqlbtn {
+                grid-row-start: 5;
+                grid-row-end: 7;
+                grid-column-start: 8;
+                height: 100%;
+            }
+            .modedisplay {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            /********** POSITIONS, SIZES, AND FONTS **********/
+            .calc {
+                width: 800px;
+                margin-right: auto; /* this centers it */
+                margin-left: auto; /* this centers it */
+                margin-top: 10px;
+                padding: 10px;
+            }
+            .calcdisplay {
+                width: 100%;
+                height: 70px;
+                line-height: 90px;
+                font-size: 40px;
+                text-align: right;
+                padding-right: 15px;
+                border: 0px;
+            }
+            .drgbox {
+                margin-top: 0px;
+                height: 25px;
+            }
+            .buttongrid {
+                padding-top: 0px;
+            }
+
+            button {
+                height: 60px;
+            }
+            sup {
+                font-size: 15px;
+            }
+
+            /********** COLORS AND BORDERS **********/
+            .calc {border: 1px solid black;}
+            button {border:1px solid black;}
+
+            .calc { background-color: darkgray;}
+            .buttongrid {background-color: darkgray;}
+            .calcdisplay { background-color: black; color: white;}
+            .drgbox { color: gray;}
+            .dispbox { color: gray;}
+            .numbtn { background-color: gainsboro; color: black;}
+            .opnbtn { background-color: #805e58; color: white;}
+            .clrbtn { background-color: firebrick; color: white;}
+            .membtn { background-color: steelblue; color: white;}
+            .eqlbtn { background-color: #ff9819; color: white;}
+            .funbtn { background-color: dimgray; color: white;}
+            .modebtn { background-color: darkslategray; color: white;}
+            .modebtnpushed {
+                background-color: #597272;
+                color: white;
+                box-shadow: 3px 3px black inset;
+            }
+
+        </style>
+        <script>
+            "use strict";
+
+            var debug=true;
+
+            var floatStack = new Array;
+            var memory = 0;
+            var startNewNumber = true;
+            var secondFunc = false;
+            var drgMode = "DEG";
+            var dispMode = "NORMAL";
+
+            const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
+            const binaryOps = ['mult','div','add','sub','yroot','ypower','ee','mod'];
+            const trigOps = ['sin','cos','tan','sinh','cosh','tanh'];
+            const modes = ['2nd','drg','disp'];
+
+            var trigFuncs = {
+                "sin": Math.sin,
+                "cos": Math.cos,
+                "tan": Math.tan,
+                "sinh": Math.sinh,
+                "cosh": Math.cosh,
+                "tanh": Math.tanh
+            };
+            var invTrigFuncs = {
+                "sin": Math.asin,
+                "cos": Math.acos,
+                "tan": Math.atan,
+                "sinh": Math.asinh,
+                "cosh": Math.acosh,
+                "tanh": Math.atanh
+            }
+
+            var drgToggler = {
+                "DEG": "RAD",
+                "RAD": "GRAD",
+                "GRAD": "DEG"
+            };
+            var dispToggler = {
+                "NORMAL": "SCI",
+                "SCI": "ENG",
+                "ENG": "NORMAL"
+            };
+
+            function debugState()
+            {
+                if (!debug) return;
+                let elt = document.getElementById("debugger");
+                elt.innerHTML =
+                    `
+                    floatStack=${floatStack}<br>
+                    memory=${memory}<br>
+                    startNewNumber=${startNewNumber}<br>
+                    secondFunc=${secondFunc}<br>
+                    drgMode=${drgMode}<br>
+                    dispMode=${dispMode}<br>
+                    `;
+            }
+
+            function storeString(s)
+            {
+                document.getElementById("calcdisplay").value = s;
+            }
+            function storeFloat(f)
+            {
+                storeString("" + f);
+            }
+            function retrieveString()
+            {
+                let s = document.getElementById("calcdisplay").value;
+                return s;
+            }
+            function retrieveFloat()
+            {
+                return parseFloat(retrieveString());
+            }
+
+            function resetState()
+            {
+                storeFloat("0");
+                floatStack = new Array();
+                ans = "";
+                startNewNumber = true;
+            }
+
+            function radsFromDRG(f)
+            {
+                if (drgMode == "DEG")
+                {
+                    return f * Math.PI / 180.0;
+                }
+                else if (drgMode == "RAD")
+                {
+                    return f;
+                }
+                else if (drgMode == "GRAD")
+                {
+                    return f * Math.PI / 200.0;
+                }
+            }
+            function drgFromRads(f)
+            {
+                if (drgMode == "DEG")
+                {
+                    return f * 180.0 / Math.PI;
+                }
+                else if (drgMode == "RAD")
+                {
+                    return f;
+                }
+                else if (drgMode == "GRAD")
+                {
+                    return f * 200.0 / Math.PI;
+                }
+            }
+
+            function processNumber(input)
+            {
+
+                let value = retrieveString();
+
+                if (input == "." && value.includes("."))
+                {
+                    // we don't need another decimal point if we already have one
+                    return;
+                }
+
+                if (value === "0" && input != ".")
+                {
+                    // get rid of leading zero if we didn't just input a decimal
+                    value = "";
+                }
+
+                if (startNewNumber)
+                {
+                    value = input;
+                    startNewNumber = false;
+                }
+                else
+                {
+                    value = value + input;
+                }
+
+                storeString(value);
+
+            }
+
+            function processTrig(funcName)
+            {
+                // The funcName parameter is the name of the trig function being utilized.
+                // It will never be the inverse functions such as asin, it will just be
+                // sin, cos, tan, sinh, cosh, tanh.  The "secondFunc" global controls
+                // whether or not to do the inverse functions.
+
+                let result;
+                let temp;
+
+                // if inverse, call inverse trig function and convert radian result to drg
+                if (secondFunc)
+                {
+                    temp = invTrigFuncs[funcName](retrieveFloat());
+                    result = drgFromRads(temp);
+                }
+                // if not inverse, convert number to radians and call trig function
+                else
+                {
+                    temp = radsFromDRG(retrieveFloat());
+                    result = trigFuncs[funcName](temp);
+                }
+                storeFloat(result);
+            }
+
+            function compute()
+            {
+                let arg2 = retrieveFloat();
+                let op = floatStack.pop();
+
+                if (op == "add")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = arg1 + arg2;
+                    storeFloat(result);
+                }
+                else if (op == "sub")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = arg1 - arg2;
+                    storeFloat(result);
+                }
+                else if (op == "mult")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = arg1 * arg2;
+                    storeFloat(result);
+                }
+                else if (op == "div")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = arg1 / arg2;
+                    storeFloat(result);
+                }
+                else if (op == "yroot")
+                {
+                    let arg1 = floatStack.pop();
+                    let arg2inv = 1.0/arg2;
+                    let result = Math.pow(arg1,arg2inv);
+                    storeFloat(result);
+                }
+                else if (op == "ypower")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = Math.pow(arg1,arg2);
+                    storeFloat(result);
+                }
+                else if (op == "mod")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = arg1 % arg2;
+                    storeFloat(result);
+                }
+                else if (op == "ee")
+                {
+                    let arg1 = floatStack.pop();
+                    let plus = (arg2>0)? "+" : "";
+                    let str = "" + arg1 + "e" + plus + arg2;
+                    storeString(str);
+                }
+            }
+
+            function processInput(input)
+            {
+                if (numerics.includes(input))
+                {
+                    processNumber(input);
+                    return;
+                }
+
+                // If we got here, the user just pressed a non-number button,
+                // so we are done entering this number and can get ready to
+                // start a new number.
+                startNewNumber = true;
+
+                // set up the trigonometry functions
+                let funcs = secondFunc? invTrigFuncs : trigFuncs;
+
+                if (binaryOps.includes(input))
+                {
+                    // We just got a binary operation.  Push it onto the stack
+                    // along with whatever is shown in the display.
+                    floatStack.push(retrieveFloat());
+                    floatStack.push(input);
+                }
+                else if (input == "equals")
+                {
+                    compute();
+                }
+                else if (input == "ac")
+                {
+                    resetState();
+                }
+                else if (input == "del")
+                {
+
+                }
+                // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
+                else if (trigOps.includes(input))
+                {
+                    processTrig(input);
+                }
+                else if (input == "multinv")
+                {
+                    storeFloat(1.0 / retrieveFloat());
+                }
+                else if (input == "plusmin")
+                {
+                    storeFloat(-1.0 * retrieveFloat());
+                }
+                else if (input == "square")
+                {
+                    storeFloat(Math.pow(retrieveFloat(), 2));
+                }
+                else if (input == "sqrt")
+                {
+                    storeFloat(Math.sqrt(retrieveFloat()));
+                }
+                else if (input == "natlog")
+                {
+                    storeFloat(Math.log(retrieveFloat()));
+                }
+                else if (input == "factorial")
+                {
+                    let n = retrieveFloat();
+                    let result = 1;
+                    for (let i=2; i<=Math.trunc(n); i++)
+                    {
+                        result *= i;
+                    }
+                    storeFloat(result);
+                }
+
+                // ========== HANDLE MODES ==========
+                else if (input == "drg")
+                {
+                    drgMode = drgToggler[drgMode];
+                    document.getElementById("drgbox").innerHTML = drgMode;
+                }
+                else if (input == "disp")
+                {
+                    dispMode = dispToggler[dispMode];
+                    document.getElementById("dispbox").innerHTML = dispMode;
+
+                    if (dispMode == "SCI")
+                    {
+                        let sci = retrieveFloat().toExponential();
+                        storeFloat(sci);
+                    }
+                    else if (dispMode == "NORMAL")
+                    {
+                        let arr = retrieveString().split("e");
+                        if (arr.length == 2)
+                        {
+                            // if arr.length == 1, don't need to do anything
+                            // if arr.length > 2 or 0, that's weird, do nothing
+                            let x = parseFloat(arr[0]);
+                            let y = parseFloat(arr[1]);
+                            let z = x * Math.pow(10,y);
+                            storeFloat(z);
+                        }
+                    }
+                    else if (dispMode == "ENG")
+                    {
+                        // convert to sci notation and split into chunks.
+                        let arr = retrieveFloat().toExponential().split("e");
+                        let x = parseFloat(arr[0]);
+                        let y = parseFloat(arr[1]);
+
+                        // figure out if y is divisible by 3 and potentially
+                        // adjust x and y so that y is a multiple of 3
+                        let r = y % 3;
+                        if (r)
+                        {
+                            // if y is not divisible by 3, subtract enough (i) to make it
+                            // divisible by 3, and then multiply x by 10 to the i power.
+                            let t = (r<0)? 3: 0;
+                            let i = t + r;
+                            let newy = y - i;
+                            let newx = x * (Math.pow(10,i));
+                            let plus = (y>0)? "+" : "";
+                            let str = "" + newx + "e" + plus + newy;
+                            storeString(str);
+                        }
+                    }
+                }
+                else if (input == "2nd")
+                {
+                    let elts = new Array();
+                    elts.push(document.getElementById("sin"));
+                    elts.push(document.getElementById("cos"));
+                    elts.push(document.getElementById("tan"));
+                    elts.push(document.getElementById("sinh"));
+                    elts.push(document.getElementById("cosh"));
+                    elts.push(document.getElementById("tanh"));
+                    let elt2nd = document.getElementById("2nd");
+                    let str = "<sup>-1</sup>";
+                    for (let i in elts)
+                    {
+                        if (secondFunc)
+                        {
+                            let h = elts[i].innerHTML;
+                            elts[i].innerHTML = h.slice(0, h.length - str.length);
+                        }
+                        else
+                        {
+                            elts[i].innerHTML += str;
+                        }
+                    }
+
+                    elt2nd.className = secondFunc? "modebtn" : "modebtnpushed";
+
+                    secondFunc = !secondFunc;
+
+                }
+                // ========== HANDLE MEMORY FUNCTIONS ==========
+                else if (input == "mc")
+                {
+                    memory = 0;
+                }
+                else if (input == "mr")
+                {
+                    storeFloat(memory);
+                }
+                else if (input == "madd")
+                {
+                    memory += retrieveFloat();
+                    storeFloat(memory);
+                }
+                else if (input == "msub")
+                {
+                    memory -= retrieveFloat();
+                    storeFloat(memory);
+                }
+                // ========== HANDLE CONSTANTS ==========
+                else if (input == "e")
+                {
+                    storeFloat(Math.E);
+                }
+                else if (input == "pi")
+                {
+                    storeFloat(Math.PI);
+                }
+                else if (input == "random")
+                {
+                    storeFloat(Math.random());
+                }
+
+            }
+
+            // BUTTON HANDLER - handles every click of every button
+            window.onclick = function(e)
+            {
+                if (e.target.tagName == "BUTTON")
+                {
+                    processInput(e.target.id);
+                }
+                debugState();
+            }
+        </script>
+    </head>
+
+    <body>
+        <div class="calc">
+            <input id="calcdisplay" type="text" class="calcdisplay" value="0" disabled>
+            <div id="modedisplay" class="modedisplay">
+                <div id="drgbox" class="drgbox">DEG</div>
+                <div id="dispbox" class="dispbox">NORMAL</div>
+            </div>
+            <div class="buttongrid">
+
+                <button id="2nd" class="modebtn">2nd</button>
+                <button id="drg" class="modebtn">DRG</button>
+                <button id="disp" class="modebtn">Disp</button>
+                <button id="plusmin" class="funbtn">&pm;</button>
+                <button id="mc" class="membtn">MC</button>
+                <button id="madd" class="membtn">M+</button>
+                <button id="msub" class="membtn">M-</button>
+                <button id="mr" class="membtn">MR</button>
+
+                <button id="mod" class="funbtn">mod</button>
+                <button id="square" class="funbtn">x<sup>2</sup></button>
+                <button id="ypower" class="funbtn">x<sup>y</sup></button>
+                <button id="multinv" class="funbtn">1/x</button>
+                <button id="ac" class="clrbtn">AC</button>
+                <button id="del" class="clrbtn">DEL</button>
+                <button id="div" class="opnbtn">&#247</button>
+                <button id="mult" class="opnbtn">&times;</button>
+
+                <button id="factorial" class="funbtn">x!</button>
+                <button id="sqrt" class="funbtn">&radic;</button>
+                <button id="yroot" class="funbtn"><sup>y</sup>&radic;</button>
+                <button id="natlog" class="funbtn">ln</button>
+                <button id="7" class="numbtn">7</button>
+                <button id="8" class="numbtn">8</button>
+                <button id="9" class="numbtn">9</button>
+                <button id="sub" class="opnbtn">-</button>
+
+                <button id="sin" class="funbtn">sin</button>
+                <button id="cos" class="funbtn">cos</button>
+                <button id="tan" class="funbtn">tan</button>
+                <button id="ee" class="funbtn">EE</button>
+                <button id="4" class="numbtn">4</button>
+                <button id="5" class="numbtn">5</button>
+                <button id="6" class="numbtn">6</button>
+                <button id="add" class="opnbtn">+</button>
+
+                <button id="sinh" class="funbtn">sinh</button>
+                <button id="cosh" class="funbtn">cosh</button>
+                <button id="tanh" class="funbtn">tanh</button>
+                <button id="pi" class="funbtn">&pi;</button>
+                <button id="1" class="numbtn">1</button>
+                <button id="2" class="numbtn">2</button>
+                <button id="3" class="numbtn">3</button>
+                <button id="equals" class="eqlbtn">=</button>
+
+                <button id="beginparen" class="funbtn">(</button>
+                <button id="endparen" class="funbtn">)</button>
+                <button id="random" class="funbtn">Rand</button>
+                <button id="e" class="funbtn">e</button>
+                <button id="0" class="numbtn">0</button>
+                <button id="." class="numbtn">.</button>
+                <button id="ans" class="numbtn">ANS</button>
+
+
+
+            </div>
+        </div>
+        <div id="debugger"></div>
+
+
+    </body>
+
+
+
+</html>
