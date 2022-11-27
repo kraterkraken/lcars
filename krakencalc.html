@@ -111,20 +111,21 @@
         </style>
         <script>
             "use strict";
-
-            var debug=true;
-
-            var floatStack = new Array;
-            var memory = 0;
-            var startNewNumber = true;
-            var secondFunc = false;
-            var drgMode = "DEG";
-            var dispMode = "STD";
-
+                        /*jshint esversion: 6 */
+            const debug=true;
             const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
-            const binaryOps = ['mult','div','add','sub','yroot','ypower','ee','mod','logy'];
+            const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
+            const unaryOps = ['multinv', 'plusmin','square','sqrt','natlog','log10','factorial'];
             const trigOps = ['sin','cos','tan','sinh','cosh','tanh',
-                            'asin','acos','atan','asinh','acosh','atanh',];
+                            'asin','acos','atan','asinh','acosh','atanh'];
+            const opPrecedence = {
+                    "add":1, "sub":1,
+                    "mod":2, "mult":2, "div":2,
+                    "yroot":3, "ypower": 3, "logy":3, "ee":3,
+                    'multinv':3, 'plusmin':3, 'square':3, 'sqrt':3, 'natlog':3, 'log10':3, 'factorial':3,
+                    "(":4, ")":4
+            };
+
             const modes = ['2nd','drg','disp'];
 
             const trigFuncs = {
@@ -140,7 +141,7 @@
                 "asinh": Math.asinh,
                 "acosh": Math.acosh,
                 "atanh": Math.atanh
-            }
+            };
 
             const drgToggler = {
                 "DEG": "RAD",
@@ -159,6 +160,17 @@
                 "GRAD": (Math.PI / 200.0) // converts gradians to radians
             };
 
+            // ============== CALCULATOR STATE =================================
+
+            var floatStack = [];
+            var memory = 0;
+            var startNewNumber = true;
+            var secondFunc = false;
+            var drgMode = "DEG";
+            var dispMode = "STD";
+            var opStack = []; // temp holding stack for operations
+            var outputDeque = []; // reverse polish notation list of tokens
+
             function debugState()
             {
                 if (!debug) return;
@@ -171,8 +183,12 @@
                     secondFunc=${secondFunc}<br>
                     drgMode=${drgMode}<br>
                     dispMode=${dispMode}<br>
+                    dispMode=${opStack}<br>
+                    dispMode=${outputDeque}<br>
                     `;
             }
+
+            // ============== HELPER FUNCTIONS =================================
 
             function storeString(s)
             {
@@ -195,7 +211,7 @@
             function allClear()
             {
                 storeFloat("0");
-                floatStack = new Array;
+                floatStack = [];
                 startNewNumber = true;
             }
 
@@ -239,7 +255,7 @@
 
             }
 
-            function processTrig(funcName)
+            function processTrig(funcName, arg)
             {
                 // The funcName parameter is the name of the trig function being utilized.
                 let result;
@@ -248,78 +264,61 @@
                 // if inverse, call inverse trig function and convert radian result to drg
                 if (secondFunc)
                 {
-                    temp = trigFuncs[funcName](retrieveFloat());
+                    temp = trigFuncs[funcName](arg);
                     result = drgFromRads(temp);
                 }
                 // if not inverse, convert number to radians and call trig function
                 else
                 {
-                    temp = radsFromDRG(retrieveFloat());
+                    temp = radsFromDRG(arg);
                     result = trigFuncs[funcName](temp);
                 }
-                storeFloat(result);
+                return result;
             }
 
             function compute()
             {
                 let arg2 = retrieveFloat();
                 let op = floatStack.pop();
+                let arg1 = floatStack.pop();
+                let result = executeBinary(op, arg1, arg2);
+                storeFloat(result);
+            }
 
-                if (op == "add")
-                {
-                    let arg1 = floatStack.pop();
-                    let result = arg1 + arg2;
-                    storeFloat(result);
+            function executeBinary(op, arg1, arg2)
+            {
+                switch(op) {
+                    case "add"    : return arg1 + arg2;
+                    case "sub"    : return arg1 - arg2;
+                    case "mod"    : return arg1 % arg2;
+                    case "mult"   : return arg1 * arg2;
+                    case "div"    : return arg1 - arg2;
+                    case "yroot"  : return Math.pow(arg1, 1.0 / arg2);
+                    case "ypower" : return Math.pow(arg1,arg2);
+                    case "logy"   : return Math.log(arg1) / Math.log(arg2);
+                    case "ee"     :
+                        let plus = (arg2>0)? "+" : "";
+                        let str = "" + arg1 + "e" + plus + arg2;
+                        return parseFloat(str);
                 }
-                else if (op == "sub")
+            }
+            function executeUnary(op, arg)
+            {
+                switch (op)
                 {
-                    let arg1 = floatStack.pop();
-                    let result = arg1 - arg2;
-                    storeFloat(result);
-                }
-                else if (op == "mult")
-                {
-                    let arg1 = floatStack.pop();
-                    let result = arg1 * arg2;
-                    storeFloat(result);
-                }
-                else if (op == "div")
-                {
-                    let arg1 = floatStack.pop();
-                    let result = arg1 / arg2;
-                    storeFloat(result);
-                }
-                else if (op == "yroot")
-                {
-                    let arg1 = floatStack.pop();
-                    let arg2inv = 1.0/arg2;
-                    let result = Math.pow(arg1,arg2inv);
-                    storeFloat(result);
-                }
-                else if (op == "ypower")
-                {
-                    let arg1 = floatStack.pop();
-                    let result = Math.pow(arg1,arg2);
-                    storeFloat(result);
-                }
-                else if (op == "logy")
-                {
-                    let arg1 = floatStack.pop();
-                    let result = Math.log(arg1) / Math.log(arg2);
-                    storeFloat(result);
-                }
-                else if (op == "mod")
-                {
-                    let arg1 = floatStack.pop();
-                    let result = arg1 % arg2;
-                    storeFloat(result);
-                }
-                else if (op == "ee")
-                {
-                    let arg1 = floatStack.pop();
-                    let plus = (arg2>0)? "+" : "";
-                    let str = "" + arg1 + "e" + plus + arg2;
-                    storeString(str);
+                    case "multinv"  : return 1.0 / arg;
+                    case "plusmin"  : return -1.0 * arg;
+                    case "square"   : return arg * arg;
+                    case "sqrt"     : return Math.sqrt(arg);
+                    case "natlog"   : return Math.log(arg);
+                    case "log10"    : return Math.log10(arg);
+                    case "factorial":
+                        let result = 1;
+                        for (let i=2; i<=Math.trunc(arg); i++)
+                        {
+                            result *= i;
+                        }
+                        return result;
                 }
             }
 
@@ -358,41 +357,13 @@
                 // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
                 else if (trigOps.includes(input))
                 {
-                    processTrig(input);
+                    let arg = retrieveFloat();
+                    storeFloat(processTrig(input, arg));
                 }
-                else if (input == "multinv")
+                else if (unaryOps.includes(input))
                 {
-                    storeFloat(1.0 / retrieveFloat());
-                }
-                else if (input == "plusmin")
-                {
-                    storeFloat(-1.0 * retrieveFloat());
-                }
-                else if (input == "square")
-                {
-                    storeFloat(Math.pow(retrieveFloat(), 2));
-                }
-                else if (input == "sqrt")
-                {
-                    storeFloat(Math.sqrt(retrieveFloat()));
-                }
-                else if (input == "natlog")
-                {
-                    storeFloat(Math.log(retrieveFloat()));
-                }
-                else if (input == "log10")
-                {
-                    storeFloat(Math.log10(retrieveFloat()));
-                }
-                else if (input == "factorial")
-                {
-                    let n = retrieveFloat();
-                    let result = 1;
-                    for (let i=2; i<=Math.trunc(n); i++)
-                    {
-                        result *= i;
-                    }
-                    storeFloat(result);
+                    let arg = retrieveFloat();
+                    storeFloat(executeUnary(input, arg));
                 }
 
                 // ========== HANDLE MODES ==========
@@ -454,7 +425,7 @@
                     secondFunc = !secondFunc;
 
                     // change the labels and values (aka behaviors) of the trig buttons
-                    let elts = new Array();
+                    let elts = [];
                     elts.push(document.getElementById("sin"));
                     elts.push(document.getElementById("cos"));
                     elts.push(document.getElementById("tan"));
@@ -487,7 +458,7 @@
                     }
                     else
                     {
-                        logBtn.value = "log10"
+                        logBtn.value = "log10";
                         logBtn.innerHTML = "log<sub>10</sub>";
                     }
 
@@ -547,7 +518,7 @@
                     processInput(e.target.value);
                 }
                 debugState();
-            }
+            };
             // KEYSTROKE HANDLER - handles numeric inputs on the keyboard
             document.addEventListener("keypress", function(e)
             {
