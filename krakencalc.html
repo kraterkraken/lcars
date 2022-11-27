@@ -163,6 +163,7 @@
             // ============== CALCULATOR STATE =================================
 
             var floatStack = [];
+            var currentValue = 0;
             var memory = 0;
             var startNewNumber = true;
             var secondFunc = false;
@@ -170,6 +171,7 @@
             var dispMode = "STD";
             var opStack = []; // temp holding stack for operations
             var outputDeque = []; // reverse polish notation list of tokens
+            var currentValue = 0;
 
             function debugState()
             {
@@ -178,6 +180,7 @@
                 elt.innerHTML =
                     `
                     floatStack=${floatStack}<br>
+                    currentValue=${currentValue}<br>
                     memory=${memory}<br>
                     startNewNumber=${startNewNumber}<br>
                     secondFunc=${secondFunc}<br>
@@ -190,27 +193,29 @@
 
             // ============== HELPER FUNCTIONS =================================
 
-            function storeString(s)
+            function format(item)
             {
-                document.getElementById("calcdisplay").value = s;
+                // formats the string based on the calculator display mode
+                let s = item.toString();
+                return s;
             }
-            function storeFloat(f)
+            function updateDisplay(item)
             {
-                storeString("" + f);
+                document.getElementById("calcdisplay").value = format(item);
             }
-            function retrieveString()
+            function getDisplayedString()
             {
                 let s = document.getElementById("calcdisplay").value;
                 return s;
             }
-            function retrieveFloat()
+            function getDisplayedFloat()
             {
-                return parseFloat(retrieveString());
+                return parseFloat(getDisplayedString());
             }
 
             function allClear()
             {
-                storeFloat("0");
+                updateDisplay("0");
                 floatStack = [];
                 startNewNumber = true;
             }
@@ -227,17 +232,14 @@
             function processNumber(input)
             {
 
-                let value = retrieveString();
+                let value = getDisplayedString();
 
-                if (input == "." && value.includes("."))
-                {
-                    // we don't need another decimal point if we already have one
-                    return;
-                }
+                // we don't need another decimal point if we already have one
+                if (input == "." && value.includes(".")) return;
 
+                // get rid of leading zero if we didn't just input a decimal
                 if (value === "0" && input != ".")
                 {
-                    // get rid of leading zero if we didn't just input a decimal
                     value = "";
                 }
 
@@ -251,7 +253,7 @@
                     value = value + input;
                 }
 
-                storeString(value);
+                updateDisplay(value);
 
             }
 
@@ -330,16 +332,16 @@
                 {
                     // We just got a binary operation.  Push it onto the stack
                     // along with whatever is shown in the display.
-                    floatStack.push(retrieveFloat());
+                    floatStack.push(getDisplayedFloat());
                     floatStack.push(input);
                 }
                 else if (input == "equals" || input == "Enter")
                 {
-                    let arg2 = retrieveFloat();
+                    let arg2 = getDisplayedFloat();
                     let op = floatStack.pop();
                     let arg1 = floatStack.pop();
                     let result = executeBinary(op, arg1, arg2);
-                    storeFloat(result);
+                    updateDisplay(result);
                 }
                 else if (input == "ac")
                 {
@@ -352,13 +354,13 @@
                 // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
                 else if (trigOps.includes(input))
                 {
-                    let arg = retrieveFloat();
-                    storeFloat(executeTrig(input, arg));
+                    let arg = getDisplayedFloat();
+                    updateDisplay(executeTrig(input, arg));
                 }
                 else if (unaryOps.includes(input))
                 {
-                    let arg = retrieveFloat();
-                    storeFloat(executeUnary(input, arg));
+                    let arg = getDisplayedFloat();
+                    updateDisplay(executeUnary(input, arg));
                 }
 
                 // ========== HANDLE MODES ==========
@@ -374,12 +376,12 @@
 
                     if (dispMode == "SCI")
                     {
-                        let sci = retrieveFloat().toExponential();
-                        storeFloat(sci);
+                        let sci = getDisplayedFloat().toExponential();
+                        updateDisplay(sci);
                     }
                     else if (dispMode == "STD")
                     {
-                        let arr = retrieveString().split("e");
+                        let arr = getDisplayedString().split("e");
                         if (arr.length == 2)
                         {
                             // if arr.length == 1, don't need to do anything
@@ -387,13 +389,13 @@
                             let x = parseFloat(arr[0]);
                             let y = parseFloat(arr[1]);
                             let z = x * Math.pow(10,y);
-                            storeFloat(z);
+                            updateDisplay(z);
                         }
                     }
                     else if (dispMode == "ENG")
                     {
                         // convert to sci notation and split into chunks.
-                        let arr = retrieveFloat().toExponential().split("e");
+                        let arr = getDisplayedFloat().toExponential().split("e");
                         let x = parseFloat(arr[0]);
                         let y = parseFloat(arr[1]);
 
@@ -410,7 +412,7 @@
                             let newx = x * (Math.pow(10,i));
                             let plus = (y>0)? "+" : "";
                             let str = "" + newx + "e" + plus + newy;
-                            storeString(str);
+                            updateDisplay(str);
                         }
                     }
                 }
@@ -468,30 +470,30 @@
                 }
                 else if (input == "mr")
                 {
-                    storeFloat(memory);
+                    updateDisplay(memory);
                 }
                 else if (input == "madd")
                 {
-                    memory += retrieveFloat();
-                    storeFloat(memory);
+                    memory += getDisplayedFloat();
+                    updateDisplay(memory);
                 }
                 else if (input == "msub")
                 {
-                    memory -= retrieveFloat();
-                    storeFloat(memory);
+                    memory -= getDisplayedFloat();
+                    updateDisplay(memory);
                 }
                 // ========== HANDLE CONSTANTS ==========
                 else if (input == "e")
                 {
-                    storeFloat(Math.E);
+                    updateDisplay(Math.E);
                 }
                 else if (input == "pi")
                 {
-                    storeFloat(Math.PI);
+                    updateDisplay(Math.PI);
                 }
                 else if (input == "random")
                 {
-                    storeFloat(Math.random());
+                    updateDisplay(Math.random());
                 }
 
             }
