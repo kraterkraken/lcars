@@ -255,7 +255,7 @@
 
             }
 
-            function processTrig(funcName, arg)
+            function executeTrig(funcName, arg)
             {
                 // The funcName parameter is the name of the trig function being utilized.
                 let result;
@@ -274,15 +274,6 @@
                     result = trigFuncs[funcName](temp);
                 }
                 return result;
-            }
-
-            function compute()
-            {
-                let arg2 = retrieveFloat();
-                let op = floatStack.pop();
-                let arg1 = floatStack.pop();
-                let result = executeBinary(op, arg1, arg2);
-                storeFloat(result);
             }
 
             function executeBinary(op, arg1, arg2)
@@ -344,7 +335,11 @@
                 }
                 else if (input == "equals" || input == "Enter")
                 {
-                    compute();
+                    let arg2 = retrieveFloat();
+                    let op = floatStack.pop();
+                    let arg1 = floatStack.pop();
+                    let result = executeBinary(op, arg1, arg2);
+                    storeFloat(result);
                 }
                 else if (input == "ac")
                 {
@@ -358,7 +353,7 @@
                 else if (trigOps.includes(input))
                 {
                     let arg = retrieveFloat();
-                    storeFloat(processTrig(input, arg));
+                    storeFloat(executeTrig(input, arg));
                 }
                 else if (unaryOps.includes(input))
                 {
