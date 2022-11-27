@@ -122,7 +122,7 @@
             var dispMode = "STD";
 
             const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
-            const binaryOps = ['mult','div','add','sub','yroot','ypower','ee','mod'];
+            const binaryOps = ['mult','div','add','sub','yroot','ypower','ee','mod','logy'];
             const trigOps = ['sin','cos','tan','sinh','cosh','tanh',
                             'asin','acos','atan','asinh','acosh','atanh',];
             const modes = ['2nd','drg','disp'];
@@ -302,6 +302,12 @@
                     let result = Math.pow(arg1,arg2);
                     storeFloat(result);
                 }
+                else if (op == "logy")
+                {
+                    let arg1 = floatStack.pop();
+                    let result = Math.log(arg1) / Math.log(arg2);
+                    storeFloat(result);
+                }
                 else if (op == "mod")
                 {
                     let arg1 = floatStack.pop();
@@ -447,6 +453,7 @@
                     // we just pushed the 2nd function button, so flip the indicator
                     secondFunc = !secondFunc;
 
+                    // change the labels and values (aka behaviors) of the trig buttons
                     let elts = new Array();
                     elts.push(document.getElementById("sin"));
                     elts.push(document.getElementById("cos"));
@@ -470,6 +477,18 @@
                             elt.innerHTML = elt.innerHTML.replace(inverseStr, "");
                             elt.value = elt.value.slice(1);
                         }
+                    }
+                    // change the label and values (aka behaviors) of some other buttons
+                    let logBtn = document.getElementById("log");
+                    if (secondFunc)
+                    {
+                        logBtn.value = "logy";
+                        logBtn.innerHTML = "log<sub>y</sub>";
+                    }
+                    else
+                    {
+                        logBtn.value = "log10"
+                        logBtn.innerHTML = "log<sub>10</sub>";
                     }
 
                     // use a different style for the 2nd function button
