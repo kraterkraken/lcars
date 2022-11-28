@@ -133,13 +133,13 @@
                 updateNoFormat(item=this._value) {
                     let s = this.round(item).toString();
                     this._widget.value = s;
-                    this._value = parseFloat(s);
+                    this._value = parseFloat(item);
                     this._isShunted = false;
                 }
                 update(item=this._value) {
                     let s = this.format(item);
                     this._widget.value = s;
-                    this._value = parseFloat(s);
+                    this._value = parseFloat(item); // we want stored value to be full precision
                     this._isShunted = false;
                 }
                 round(item) {
