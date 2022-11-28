@@ -131,7 +131,7 @@
                 set isShunted(val) { this._isShunted = val; }
 
                 updateNoFormat(item=this._value) {
-                    let s = item.toString();
+                    let s = this.round(item).toString();
                     this._widget.value = s;
                     this._value = parseFloat(s);
                     this._isShunted = false;
@@ -142,9 +142,12 @@
                     this._value = parseFloat(s);
                     this._isShunted = false;
                 }
+                round(item) {
+                    return Number(Math.round(item+"e"+this._precision)+"e-"+this._precision);
+                }
                 format(item) {
                     // formats the string based on the display mode
-                    let s = item.toString();
+                    let s = this.round(item).toString();
                     let f = parseFloat(s);
                     /////////////////////return s;
                     if (this._mode == "SCI")
