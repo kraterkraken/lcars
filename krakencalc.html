@@ -111,7 +111,78 @@
         </style>
         <script>
             "use strict";
-                        /*jshint esversion: 6 */
+            /*jshint esversion: 6 */
+
+            class CalcDisplay {
+                constructor(elementId, precision)
+                {
+                    this._value = 0.0;
+                    this._widget = document.getElementById(elementId);
+                    this._isShunted = false;
+                    this._mode = "DEG";
+                    this._precision = precision;
+                }
+
+                get value() { return this._value; }
+                get isShunted() { return this._isShunted; }
+                get mode() { return this._mode; }
+
+                set mode(val) { this._mode = val; }
+                set isShunted(val) { this._isShunted = val; }
+
+                updateNoFormat(item=this._value) {
+                    let s = item.toString();
+                    this._widget.value = s;
+                    this._value = parseFloat(s);
+                    this._isShunted = false;
+                }
+                update(item=this._value) {
+                    let s = this.format(item);
+                    this._widget.value = s;
+                    this._value = parseFloat(s);
+                    this._isShunted = false;
+                }
+                format(item) {
+                    // formats the string based on the display mode
+                    let s = item.toString();
+                    let f = parseFloat(s);
+                    /////////////////////return s;
+                    if (this._mode == "SCI")
+                    {
+                        s =  f.toExponential();
+                    }
+                    else if (dispMode == "STD")
+                    {
+                        s =  f.toString();
+                    }
+                    else if (dispMode == "ENG")
+                    {
+                        // convert to sci notation and split into chunks.
+                        let arr = f.toExponential().split("e");
+                        let x = parseFloat(arr[0]);
+                        let y = parseFloat(arr[1]);
+
+                        // figure out if y is divisible by 3 and potentially
+                        // adjust x and y so that the new y is a multiple of 3
+                        let r = y % 3;
+                        if (r)
+                        {
+                            // if y is not divisible by 3, subtract enough (i) to make it
+                            // divisible by 3, and then multiply x by 10 to the i power.
+                            let t = (r<0)? 3: 0;
+                            let i = t + r;
+                            let newy = y - i;
+                            let newx = x * (Math.pow(10,i));
+                            let plus = (y>0)? "+" : "";
+                            s = "" + newx + "e" + plus + newy;
+                        }
+                    }
+
+                    return s;
+                }
+            }
+
+
             const debug=true;
             const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
             const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
@@ -172,6 +243,7 @@
             var opStack = []; // temp holding stack for operations
             var outputDeque = []; // reverse polish notation list of tokens
             var currentValue = 0;
+            var calcDisplay; // initialized in the body.onload handler
 
             function debugState()
             {
@@ -186,36 +258,17 @@
                     secondFunc=${secondFunc}<br>
                     drgMode=${drgMode}<br>
                     dispMode=${dispMode}<br>
-                    dispMode=${opStack}<br>
-                    dispMode=${outputDeque}<br>
+                    opStack=${opStack}<br>
+                    outputDeque=${outputDeque}<br>
                     `;
             }
 
-            // ============== HELPER FUNCTIONS =================================
 
-            function format(item)
-            {
-                // formats the string based on the calculator display mode
-                let s = item.toString();
-                return s;
-            }
-            function updateDisplay(item)
-            {
-                document.getElementById("calcdisplay").value = format(item);
-            }
-            function getDisplayedString()
-            {
-                let s = document.getElementById("calcdisplay").value;
-                return s;
-            }
-            function getDisplayedFloat()
-            {
-                return parseFloat(getDisplayedString());
-            }
+            // ============== HELPER FUNCTIONS =================================
 
             function allClear()
             {
-                updateDisplay("0");
+                calcDisplay.update("0");
                 floatStack = [];
                 startNewNumber = true;
             }
@@ -232,16 +285,13 @@
             function processNumber(input)
             {
 
-                let value = getDisplayedString();
+                let value = calcDisplay.value.toString();
 
                 // we don't need another decimal point if we already have one
                 if (input == "." && value.includes(".")) return;
 
                 // get rid of leading zero if we didn't just input a decimal
-                if (value === "0" && input != ".")
-                {
-                    value = "";
-                }
+                if (value === "0" && input != ".") value = "";
 
                 if (startNewNumber)
                 {
@@ -253,7 +303,7 @@
                     value = value + input;
                 }
 
-                updateDisplay(value);
+                calcDisplay.updateNoFormat(value);
 
             }
 
@@ -285,7 +335,7 @@
                     case "sub"    : return arg1 - arg2;
                     case "mod"    : return arg1 % arg2;
                     case "mult"   : return arg1 * arg2;
-                    case "div"    : return arg1 - arg2;
+                    case "div"    : return arg1 / arg2;
                     case "yroot"  : return Math.pow(arg1, 1.0 / arg2);
                     case "ypower" : return Math.pow(arg1,arg2);
                     case "logy"   : return Math.log(arg1) / Math.log(arg2);
@@ -300,7 +350,7 @@
                 switch (op)
                 {
                     case "multinv"  : return 1.0 / arg;
-                    case "plusmin"  : return -1.0 * arg;
+                    case "plusmin"  : return -arg;
                     case "square"   : return arg * arg;
                     case "sqrt"     : return Math.sqrt(arg);
                     case "natlog"   : return Math.log(arg);
@@ -327,21 +377,28 @@
                 // so we are done entering this number and can get ready to
                 // start a new number.
                 startNewNumber = true;
+                if (!calcDisplay.isShunted)
+                {
+                    // if the number idsplayed hasn't been shunted yet,
+                    // shunt it by pushnig it onto the end of the outputDeque
+                    outputDeque.push(calcDisplay.value);
+                    calcDisplay.isShunted = true;
+                }
 
                 if (binaryOps.includes(input))
                 {
                     // We just got a binary operation.  Push it onto the stack
                     // along with whatever is shown in the display.
-                    floatStack.push(getDisplayedFloat());
+                    floatStack.push(calcDisplay.value);
                     floatStack.push(input);
                 }
                 else if (input == "equals" || input == "Enter")
                 {
-                    let arg2 = getDisplayedFloat();
+                    let arg2 = calcDisplay.value;
                     let op = floatStack.pop();
                     let arg1 = floatStack.pop();
                     let result = executeBinary(op, arg1, arg2);
-                    updateDisplay(result);
+                    calcDisplay.update(result);
                 }
                 else if (input == "ac")
                 {
@@ -354,13 +411,17 @@
                 // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
                 else if (trigOps.includes(input))
                 {
-                    let arg = getDisplayedFloat();
-                    updateDisplay(executeTrig(input, arg));
+                    //let arg = calcDisplay.value;
+                    //calcDisplay.update(executeTrig(input, arg));
+                    let arg = outputDeque.pop();
+                    let ans = executeTrig(input, arg);
+                    outputDeque.push(ans);
+                    calcDisplay.update(ans);
                 }
                 else if (unaryOps.includes(input))
                 {
-                    let arg = getDisplayedFloat();
-                    updateDisplay(executeUnary(input, arg));
+                    let arg = calcDisplay.value;
+                    calcDisplay.update(executeUnary(input, arg));
                 }
 
                 // ========== HANDLE MODES ==========
@@ -373,48 +434,8 @@
                 {
                     dispMode = dispToggler[dispMode];
                     document.getElementById("dispbox").innerHTML = dispMode;
-
-                    if (dispMode == "SCI")
-                    {
-                        let sci = getDisplayedFloat().toExponential();
-                        updateDisplay(sci);
-                    }
-                    else if (dispMode == "STD")
-                    {
-                        let arr = getDisplayedString().split("e");
-                        if (arr.length == 2)
-                        {
-                            // if arr.length == 1, don't need to do anything
-                            // if arr.length > 2 or 0, that's weird, do nothing
-                            let x = parseFloat(arr[0]);
-                            let y = parseFloat(arr[1]);
-                            let z = x * Math.pow(10,y);
-                            updateDisplay(z);
-                        }
-                    }
-                    else if (dispMode == "ENG")
-                    {
-                        // convert to sci notation and split into chunks.
-                        let arr = getDisplayedFloat().toExponential().split("e");
-                        let x = parseFloat(arr[0]);
-                        let y = parseFloat(arr[1]);
-
-                        // figure out if y is divisible by 3 and potentially
-                        // adjust x and y so that y is a multiple of 3
-                        let r = y % 3;
-                        if (r)
-                        {
-                            // if y is not divisible by 3, subtract enough (i) to make it
-                            // divisible by 3, and then multiply x by 10 to the i power.
-                            let t = (r<0)? 3: 0;
-                            let i = t + r;
-                            let newy = y - i;
-                            let newx = x * (Math.pow(10,i));
-                            let plus = (y>0)? "+" : "";
-                            let str = "" + newx + "e" + plus + newy;
-                            updateDisplay(str);
-                        }
-                    }
+                    calcDisplay.mode = dispMode;
+                    calcDisplay.update();
                 }
                 else if (input == "2nd")
                 {
@@ -470,43 +491,34 @@
                 }
                 else if (input == "mr")
                 {
-                    updateDisplay(memory);
+                    calcDisplay.update(memory);
                 }
                 else if (input == "madd")
                 {
-                    memory += getDisplayedFloat();
-                    updateDisplay(memory);
+                    memory += calcDisplay.value;
+                    calcDisplay.update(memory);
                 }
                 else if (input == "msub")
                 {
-                    memory -= getDisplayedFloat();
-                    updateDisplay(memory);
+                    memory -= calcDisplay.value;
+                    calcDisplay.update(memory);
                 }
                 // ========== HANDLE CONSTANTS ==========
                 else if (input == "e")
                 {
-                    updateDisplay(Math.E);
+                    calcDisplay.update(Math.E);
                 }
                 else if (input == "pi")
                 {
-                    updateDisplay(Math.PI);
+                    calcDisplay.update(Math.PI);
                 }
                 else if (input == "random")
                 {
-                    updateDisplay(Math.random());
+                    calcDisplay.update(Math.random());
                 }
 
             }
 
-            // LOAD HANDLER - make sure the state is reset
-            window.addEventListener("load", function(e)
-            {
-                allClear();
-                memory = 0;
-                secondFunc = false;
-                drgMode = "DEG";
-                dispMode = "STD";
-            });
             // BUTTON HANDLER - handles every click of every button
             window.onclick = function(e)
             {
@@ -538,10 +550,21 @@
                 }
             }, false);
 
+            // LOAD HANDLER - make sure the state is reset
+            function loadBody()
+            {
+                calcDisplay = new CalcDisplay("calcdisplay", 13);
+                memory = 0;
+                secondFunc = false;
+                drgMode = "DEG";
+                dispMode = "STD";
+                allClear();
+            }
+
         </script>
     </head>
 
-    <body>
+    <body onload="loadBody();">
         <div class="calc">
             <div class="title">KrakenCalc</div>
             <input id="calcdisplay" type="text" class="calcdisplay" value="0" disabled>
