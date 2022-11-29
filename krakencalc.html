@@ -41,6 +41,10 @@
                 grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
                 grid-column-gap: 5px;
             }
+            .titlearea {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
 
             /********** POSITIONS, SIZES, AND FONTS **********/
             .calc {
@@ -68,12 +72,23 @@
             }
 
             .title {
-                font-family: "Times New Roman", serif;
-                font-style: italic;
+                font-family: "Arial", sans-serif;
                 font-size: 30px;
                 text-align: left;
+                vertical-align: bottom;
+                line-height: 30px;
                 padding-bottom: 5px;
                 padding-left: 3px;
+            }
+
+            .model {
+                font-family: "Times New Roman", serif;
+                font-style: italic;
+                font-size: 25px;
+                text-align: right;
+                vertical-align: bottom;
+                line-height: 30px;
+                padding-right: 3px;
             }
 
             button {
@@ -99,6 +114,7 @@
             .opnbtn { background-color: #805e58; color: white;}
             .clrbtn { background-color: firebrick; color: white;}
             .membtn { background-color: steelblue; color: white;}
+            .membtnstored { background-color: #24425c; color: white; }
             .eqlbtn { background-color: #ff9819; color: white;}
             .funbtn { background-color: dimgray; color: white;}
             .modebtn { background-color: darkslategray; color: white;}
@@ -187,6 +203,7 @@
 
 
             const debug=true;
+            const memOps = ['mr','mc','madd','msub'];
             const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
             const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
             const unaryOps = ['multinv', 'plusmin','square','sqrt','natlog','log10','factorial'];
@@ -274,6 +291,8 @@
                 calcDisplay.update("0");
                 floatStack = [];
                 startNewNumber = true;
+                opStack = [];
+                outputDeque = [];
             }
 
             function radsFromDRG(f)
@@ -300,6 +319,10 @@
                 {
                     value = input;
                     startNewNumber = false;
+                    // if we are starting a new number and the opStack is empty
+                    // we should remove something from the outputDeque, because
+                    // there are no operations to perform on it
+                    outputDeque.pop();
                 }
                 else
                 {
@@ -333,7 +356,7 @@
 
             function executeBinary(op, arg1, arg2)
             {
-                switch(op) {
+                switch (op) {
                     case "add"    : return arg1 + arg2;
                     case "sub"    : return arg1 - arg2;
                     case "mod"    : return arg1 % arg2;
@@ -423,8 +446,10 @@
                 }
                 else if (unaryOps.includes(input))
                 {
-                    let arg = calcDisplay.value;
-                    calcDisplay.update(executeUnary(input, arg));
+                    let arg = outputDeque.pop();
+                    let ans = executeUnary(input, arg);
+                    outputDeque.push(ans);
+                    calcDisplay.update(ans);
                 }
 
                 // ========== HANDLE MODES ==========
@@ -488,23 +513,28 @@
                     elt2nd.className = secondFunc? "modebtnpushed" : "modebtn";
                 }
                 // ========== HANDLE MEMORY FUNCTIONS ==========
-                else if (input == "mc")
+                else if (memOps.includes(input))
                 {
-                    memory = 0;
-                }
-                else if (input == "mr")
-                {
-                    calcDisplay.update(memory);
-                }
-                else if (input == "madd")
-                {
-                    memory += calcDisplay.value;
-                    calcDisplay.update(memory);
-                }
-                else if (input == "msub")
-                {
-                    memory -= calcDisplay.value;
-                    calcDisplay.update(memory);
+                    switch (input)
+                    {
+                        case "mc":
+                            memory = 0;
+                            break;
+                        case "mr":
+                            calcDisplay.update(memory);
+                            break;
+                        case "madd":
+                            memory += calcDisplay.value;
+                            calcDisplay.update(memory);
+                            break;
+                        case "msub":
+                            memory -= calcDisplay.value;
+                            calcDisplay.update(memory);
+                            break;
+                    }
+
+                    let className = (memory)? "membtnstored": "membtn";
+                    document.getElementById("mr").className = className;
                 }
                 // ========== HANDLE CONSTANTS ==========
                 else if (input == "e")
@@ -569,7 +599,10 @@
 
     <body onload="loadBody();">
         <div class="calc">
-            <div class="title">KrakenCalc</div>
+            <div class="titlearea">
+                <div class="title">KrakenCalc</div>
+                <div class="model">model rL-24</div>
+            </div>
             <input id="calcdisplay" type="text" class="calcdisplay" value="0" disabled>
             <div id="modedisplay" class="modedisplay">
                 <div></div>
@@ -586,7 +619,7 @@
                 <button value="mc" class="membtn">MC</button>
                 <button value="madd" class="membtn">M+</button>
                 <button value="msub" class="membtn">M-</button>
-                <button value="mr" class="membtn">MR</button>
+                <button id="mr" value="mr" class="membtn">MR</button>
 
                 <button value="mod" class="funbtn">mod</button>
                 <button value="square" class="funbtn">x<sup>2</sup></button>
