@@ -426,7 +426,7 @@
                     let result = executeBinary(op, arg1, arg2);
                     calcDisplay.update(result);
                 }
-                else if (input == "ac")
+                else if (input == "ac" || input == "Escape")
                 {
                     allClear();
                 }
@@ -562,10 +562,10 @@
                 debugState();
             };
             // KEYSTROKE HANDLER - handles numeric inputs on the keyboard
-            document.addEventListener("keypress", function(e)
+            document.addEventListener("keydown", function(e)
             {
                 let valids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-                            '.', '/', '*', '-', '+', 'Enter'];
+                            '.', '/', '*', '-', '+', 'Enter', 'Escape'];
 
                 if (e.key == "Enter")
                 {
@@ -575,7 +575,6 @@
                     // let's prevent that default behavior
                     e.preventDefault();
                 }
-
                 if (valids.includes(e.key))
                 {
                     processInput(e.key);
