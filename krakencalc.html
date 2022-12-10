@@ -201,6 +201,19 @@
                 }
             }
 
+            class OpStack {
+                constructor() { this._array = []; }
+                push(obj) { this._array.push(obj); }
+                pop() { return this._array.pop(); }
+                get length() { return this._array.length; }
+                get isEmpty() { return this._array.length === 0; }
+                peek() {
+                    if (!this.isEmpty)
+                        return this._array[this._array.length - 1];
+                    else
+                        return 0;
+                }
+            }
 
             const debug=true;
             const memOps = ['mr','mc','madd','msub'];
@@ -260,7 +273,7 @@
             var secondFunc = false;
             var drgMode = "DEG";
             var dispMode = "STD";
-            var opStack = []; // temp holding stack for operations
+            var opStack = new OpStack; // temp holding stack for operations
             var outputDeque = []; // reverse polish notation list of tokens
             var currentValue = 0;
             var calcDisplay; // initialized in the body.onload handler
@@ -278,7 +291,7 @@
                     secondFunc=${secondFunc}<br>
                     drgMode=${drgMode}<br>
                     dispMode=${dispMode}<br>
-                    opStack=${opStack}<br>
+                    opStack=${opStack._array}<br>
                     outputDeque=${outputDeque}<br>
                     `;
             }
@@ -291,7 +304,7 @@
                 calcDisplay.update("0");
                 floatStack = [];
                 startNewNumber = true;
-                opStack = [];
+                opStack = new OpStack();
                 outputDeque = [];
             }
 
@@ -418,7 +431,7 @@
                     floatStack.push(calcDisplay.value);
                     floatStack.push(input);
                 }
-                else if (input == "equals" || input == "Enter")
+                else if (input == "equals")
                 {
                     let arg2 = calcDisplay.value;
                     let op = floatStack.pop();
@@ -426,7 +439,7 @@
                     let result = executeBinary(op, arg1, arg2);
                     calcDisplay.update(result);
                 }
-                else if (input == "ac" || input == "Escape")
+                else if (input == "ac")
                 {
                     allClear();
                 }
@@ -577,7 +590,17 @@
                 }
                 if (valids.includes(e.key))
                 {
-                    processInput(e.key);
+                    let button = e.key;
+                    switch(button)
+                    {
+                        case "+": button = "add"; break;
+                        case "-": button = "sub"; break;
+                        case "*": button = "mult"; break;
+                        case "/": button = "div"; break;
+                        case "Enter": button = "equals"; break;
+                        case "Escape": button = "ac"; break;
+                    }
+                    processInput(button);
                     debugState();
                 }
             }, false);
