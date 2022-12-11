@@ -142,9 +142,16 @@
                 get value() { return this._value; }
                 get isShunted() { return this._isShunted; }
                 get mode() { return this._mode; }
+                get displayedString() { return this._widget.value; }
 
                 set mode(val) { this._mode = val; }
                 set isShunted(val) { this._isShunted = val; }
+
+                updateWithString(s) {
+                    this._widget.value = s;
+                    this._value = parseFloat(s);
+                    this.isShunted = false;
+                }
 
                 updateNoFormat(item=this._value) {
                     let s = this.round(item).toString();
@@ -217,6 +224,8 @@
 
             const debug=true;
             const memOps = ['mr','mc','madd','msub'];
+            const modeOps = ['2nd','drg','disp'];
+            const clearOps = ['ac','del']
             const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
             const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
             const unaryOps = ['multinv', 'plusmin','square','sqrt','natlog','log10','factorial'];
@@ -320,7 +329,7 @@
             function processNumber(input)
             {
 
-                let value = calcDisplay.value.toString();
+                let value = calcDisplay.displayedString;
 
                 // we don't need another decimal point if we already have one
                 if (input == "." && value.includes(".")) return;
@@ -328,21 +337,22 @@
                 // get rid of leading zero if we didn't just input a decimal
                 if (value === "0" && input != ".") value = "";
 
-                if (startNewNumber)
+                if (startNewNumber && input == ".")
+                {
+                    value = "0.";
+                    startNewNumber = false;
+                }
+                else if (startNewNumber && input != ".")
                 {
                     value = input;
                     startNewNumber = false;
-                    // if we are starting a new number and the opStack is empty
-                    // we should remove something from the outputDeque, because
-                    // there are no operations to perform on it
-                    outputDeque.pop();
                 }
                 else
                 {
                     value = value + input;
                 }
 
-                calcDisplay.updateNoFormat(value);
+                calcDisplay.updateWithString(value);
 
             }
 
@@ -404,68 +414,18 @@
                 }
             }
 
-            function processInput(input)
+            function processCommand(input)
             {
-                if (numerics.includes(input))
-                {
-                    processNumber(input);
-                    return;
-                }
-
-                // If we got here, the user just pressed a non-number button,
-                // so we are done entering this number and can get ready to
-                // start a new number.
-                startNewNumber = true;
-                if (!calcDisplay.isShunted)
-                {
-                    // if the number displayed hasn't been shunted yet,
-                    // shunt it by pushing it onto the end of the outputDeque
-                    outputDeque.push(calcDisplay.value);
-                    calcDisplay.isShunted = true;
-                }
-
-                if (binaryOps.includes(input))
-                {
-                    // We just got a binary operation.  Push it onto the stack
-                    // along with whatever is shown in the display.
-                    floatStack.push(calcDisplay.value);
-                    floatStack.push(input);
-                }
-                else if (input == "equals")
-                {
-                    let arg2 = calcDisplay.value;
-                    let op = floatStack.pop();
-                    let arg1 = floatStack.pop();
-                    let result = executeBinary(op, arg1, arg2);
-                    calcDisplay.update(result);
-                }
-                else if (input == "ac")
+                // ========== HANDLE CLEARS ==========
+                if (input == "ac")
                 {
                     allClear();
                 }
                 else if (input == "del")
                 {
-
+                    // TODO: code goes here!
                 }
-                // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
-                else if (trigOps.includes(input))
-                {
-                    //let arg = calcDisplay.value;
-                    //calcDisplay.update(executeTrig(input, arg));
-                    let arg = outputDeque.pop();
-                    let ans = executeTrig(input, arg);
-                    outputDeque.push(ans);
-                    calcDisplay.update(ans);
-                }
-                else if (unaryOps.includes(input))
-                {
-                    let arg = outputDeque.pop();
-                    let ans = executeUnary(input, arg);
-                    outputDeque.push(ans);
-                    calcDisplay.update(ans);
-                }
-
-                // ========== HANDLE MODES ==========
+                // ========== HANDLE MODE BUtTONS ==========
                 else if (input == "drg")
                 {
                     drgMode = drgToggler[drgMode];
@@ -549,6 +509,69 @@
                     let className = (memory)? "membtnstored": "membtn";
                     document.getElementById("mr").className = className;
                 }
+            }
+
+            function processInput(input)
+            {
+                if (numerics.includes(input))
+                {
+                    processNumber(input);
+                    return;
+                }
+
+                // If we got here, the user just pressed a non-number button,
+                // so we are done entering this number and can get ready to
+                // start a new number.
+                startNewNumber = true;
+                if (!calcDisplay.isShunted)
+                {
+                    // if the number displayed hasn't been shunted yet,
+                    // shunt it by pushing it onto the end of the outputDeque
+                    outputDeque.push(calcDisplay.value);
+                    calcDisplay.isShunted = true;
+                }
+
+                if ((memOps + clearOps + modeOps).includes(input))
+                {
+                    processCommand(input);
+                    return;
+                }
+
+                if (binaryOps.includes(input))
+                {
+                    // We just got a binary operation.  Push it onto the stack
+                    // along with whatever is shown in the display.
+                    floatStack.push(calcDisplay.value);
+                    floatStack.push(input);
+                }
+                else if (input == "equals")
+                {
+                    let arg2 = calcDisplay.value;
+                    let op = floatStack.pop();
+                    let arg1 = floatStack.pop();
+                    let result = executeBinary(op, arg1, arg2);
+                    calcDisplay.update(result);
+                    outputDeque = [];
+                }
+                // ========== HANDLE UNARY (IMMEDIATE) FUNCTIONS ==========
+                else if (trigOps.includes(input))
+                {
+                    //let arg = calcDisplay.value;
+                    //calcDisplay.update(executeTrig(input, arg));
+                    let arg = outputDeque.pop();
+                    let ans = executeTrig(input, arg);
+                    outputDeque.push(ans);
+                    calcDisplay.update(ans);
+                }
+                else if (unaryOps.includes(input))
+                {
+                    let arg = outputDeque.pop();
+                    let ans = executeUnary(input, arg);
+                    outputDeque.push(ans);
+                    calcDisplay.update(ans);
+                }
+
+                // ========== HANDLE MODES ==========
                 // ========== HANDLE CONSTANTS ==========
                 else if (input == "e")
                 {
