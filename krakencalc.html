@@ -337,14 +337,9 @@
                 // get rid of leading zero if we didn't just input a decimal
                 if (value === "0" && input != ".") value = "";
 
-                if (startNewNumber && input == ".")
+                if (startNewNumber)
                 {
-                    value = "0.";
-                    startNewNumber = false;
-                }
-                else if (startNewNumber && input != ".")
-                {
-                    value = input;
+                    value = (input == ".")? "0." : input;
                     startNewNumber = false;
                 }
                 else
