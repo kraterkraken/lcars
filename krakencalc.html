@@ -711,16 +711,9 @@ document.addEventListener("keydown", function(e)
     let valids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
                 '.', '/', '*', '-', '+', 'Enter', 'Escape'];
 
-    if (e.key == "Enter")
-    {
-        // if enter was pressed, we definitely do not want
-        // the currently active button to be "clicked",
-        // because it might not be the "=" button, so
-        // let's prevent that default behavior
-        e.preventDefault();
-    }
     if (valids.includes(e.key))
     {
+        e.preventDefault();
         let button = e.key;
         switch(button)
         {
