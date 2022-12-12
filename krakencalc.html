@@ -130,632 +130,636 @@
 <!-- ************************************************************************-->
 <!-- ************************************************************************-->
 <!-- ************************************************************************-->
-        "use strict";
-        /*jshint esversion: 6 */
+"use strict";
+/*jshint esversion: 6 */
 
-        // ****************************************************************
-        //          C L A S S E S
-        // ****************************************************************
+// ****************************************************************************
+//          C L A S S E S
+// ****************************************************************************
 
-        class CalcDisplay {
-            constructor(elementId, precision)
+class CalcDisplay {
+    constructor(elementId, precision)
+    {
+        this._value = 0.0;
+        this._widget = document.getElementById(elementId);
+        this._isShunted = false;
+        this._mode = "DEG";
+        this._precision = precision;
+    }
+
+    get value() { return this._value; }
+    get isShunted() { return this._isShunted; }
+    get mode() { return this._mode; }
+    get displayedString() { return this._widget.value; }
+
+    set mode(val) { this._mode = val; }
+    set isShunted(val) { this._isShunted = val; }
+
+    clear() {
+        this._widget.value = "";
+        this._value = undefined;
+    }
+
+    updateWithString(s) {
+        this._widget.value = s;
+        this._value = parseFloat(s);
+        this.isShunted = false;
+    }
+
+    updateNoFormat(item=this._value) {
+        let s = this.round(item).toString();
+        this._widget.value = s;
+        this._value = parseFloat(item);
+        this._isShunted = false;
+    }
+    update(item=this._value) {
+        let s = this.format(item);
+        this._widget.value = s;
+        this._value = parseFloat(item); // we want stored value to be full precision
+        this._isShunted = false;
+    }
+    round(item) {
+        return Number(Math.round(item+"e"+this._precision)+"e-"+this._precision);
+    }
+    format(item) {
+        // formats the string based on the display mode
+        let s = this.round(item).toString();
+        let f = parseFloat(s);
+        /////////////////////return s;
+        if (this._mode == "SCI")
+        {
+            s =  f.toExponential();
+        }
+        else if (dispMode == "STD")
+        {
+            s =  f.toString();
+        }
+        else if (dispMode == "ENG")
+        {
+            // convert to sci notation and split into chunks.
+            let arr = f.toExponential().split("e");
+            let x = parseFloat(arr[0]);
+            let y = parseFloat(arr[1]);
+
+            // figure out if y is divisible by 3 and potentially
+            // adjust x and y so that the new y is a multiple of 3
+            let r = y % 3;
+            if (r)
             {
-                this._value = 0.0;
-                this._widget = document.getElementById(elementId);
-                this._isShunted = false;
-                this._mode = "DEG";
-                this._precision = precision;
-            }
-
-            get value() { return this._value; }
-            get isShunted() { return this._isShunted; }
-            get mode() { return this._mode; }
-            get displayedString() { return this._widget.value; }
-
-            set mode(val) { this._mode = val; }
-            set isShunted(val) { this._isShunted = val; }
-
-            updateWithString(s) {
-                this._widget.value = s;
-                this._value = parseFloat(s);
-                this.isShunted = false;
-            }
-
-            updateNoFormat(item=this._value) {
-                let s = this.round(item).toString();
-                this._widget.value = s;
-                this._value = parseFloat(item);
-                this._isShunted = false;
-            }
-            update(item=this._value) {
-                let s = this.format(item);
-                this._widget.value = s;
-                this._value = parseFloat(item); // we want stored value to be full precision
-                this._isShunted = false;
-            }
-            round(item) {
-                return Number(Math.round(item+"e"+this._precision)+"e-"+this._precision);
-            }
-            format(item) {
-                // formats the string based on the display mode
-                let s = this.round(item).toString();
-                let f = parseFloat(s);
-                /////////////////////return s;
-                if (this._mode == "SCI")
-                {
-                    s =  f.toExponential();
-                }
-                else if (dispMode == "STD")
-                {
-                    s =  f.toString();
-                }
-                else if (dispMode == "ENG")
-                {
-                    // convert to sci notation and split into chunks.
-                    let arr = f.toExponential().split("e");
-                    let x = parseFloat(arr[0]);
-                    let y = parseFloat(arr[1]);
-
-                    // figure out if y is divisible by 3 and potentially
-                    // adjust x and y so that the new y is a multiple of 3
-                    let r = y % 3;
-                    if (r)
-                    {
-                        // if y is not divisible by 3, subtract enough (i) to make it
-                        // divisible by 3, and then multiply x by 10 to the i power.
-                        let t = (r<0)? 3: 0;
-                        let i = t + r;
-                        let newy = y - i;
-                        let newx = x * (Math.pow(10,i));
-                        let plus = (y>0)? "+" : "";
-                        s = "" + newx + "e" + plus + newy;
-                    }
-                }
-
-                return s;
+                // if y is not divisible by 3, subtract enough (i) to make it
+                // divisible by 3, and then multiply x by 10 to the i power.
+                let t = (r<0)? 3: 0;
+                let i = t + r;
+                let newy = y - i;
+                let newx = x * (Math.pow(10,i));
+                let plus = (y>0)? "+" : "";
+                s = "" + newx + "e" + plus + newy;
             }
         }
 
-        // ****************************************************************
-        //          C O N S T A N T S / G L O B A L S
-        // ****************************************************************
-        const debug=true;
-        const memOps = ['mr','mc','madd','msub'];
-        const modeOps = ['2nd','drg','disp'];
-        const clearOps = ['ac','del'];
-        const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
-        const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
-        const unaryOps = ['multinv', 'plusmin','square','sqrt','natlog','log10','factorial'];
-        const trigOps = ['sin','cos','tan','sinh','cosh','tanh',
-                        'asin','acos','atan','asinh','acosh','atanh'];
-        const opPrecedence = {
-                "EMPTY":0,
-                "add":1, "sub":1,
-                "mod":2, "mult":2, "div":2,
-                "yroot":3, "ypower": 3, "logy":3, "ee":3,
-                'multinv':3, 'plusmin':3, 'square':3, 'sqrt':3, 'natlog':3, 'log10':3, 'factorial':3,
-                "(":0, ")":0
-        };
+        return s;
+    }
+}
 
-        const trigFuncs = {
-            "sin": Math.sin,
-            "cos": Math.cos,
-            "tan": Math.tan,
-            "sinh": Math.sinh,
-            "cosh": Math.cosh,
-            "tanh": Math.tanh,
-            "asin": Math.asin,
-            "acos": Math.acos,
-            "atan": Math.atan,
-            "asinh": Math.asinh,
-            "acosh": Math.acosh,
-            "atanh": Math.atanh
-        };
+// ****************************************************************************
+//          C O N S T A N T S / G L O B A L S
+// ****************************************************************************
+const debug=true;
+const memOps = ['mr','mc','madd','msub'];
+const modeOps = ['2nd','drg','disp'];
+const clearOps = ['ac','del'];
+const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
+const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
+const unaryOps = ['multinv', 'plusmin','square','sqrt','natlog','log10','factorial'];
+const trigOps = ['sin','cos','tan','sinh','cosh','tanh',
+                'asin','acos','atan','asinh','acosh','atanh'];
+const constantOps = ['e','pi','random'];
+const opPrecedence = {
+        "EMPTY":0,
+        "add":1, "sub":1,
+        "mod":2, "mult":2, "div":2,
+        "yroot":3, "ypower": 3, "logy":3, "ee":3,
+        'multinv':3, 'plusmin':3, 'square':3, 'sqrt':3, 'natlog':3, 'log10':3, 'factorial':3,
+        "(":0, ")":0
+};
 
-        const drgToggler = {
-            "DEG": "RAD",
-            "RAD": "GRAD",
-            "GRAD": "DEG"
-        };
-        const dispToggler = {
-            "STD": "SCI",
-            "SCI": "ENG",
-            "ENG": "STD"
-        };
+const trigFuncs = {
+    "sin": Math.sin,
+    "cos": Math.cos,
+    "tan": Math.tan,
+    "sinh": Math.sinh,
+    "cosh": Math.cosh,
+    "tanh": Math.tanh,
+    "asin": Math.asin,
+    "acos": Math.acos,
+    "atan": Math.atan,
+    "asinh": Math.asinh,
+    "acosh": Math.acosh,
+    "atanh": Math.atanh
+};
 
-        const radianConvFactor = {
-            "DEG": (Math.PI / 180.0), // converts degrees to radians
-            "RAD": 1,                 // converts radians to radians
-            "GRAD": (Math.PI / 200.0) // converts gradians to radians
-        };
+const drgToggler = {
+    "DEG": "RAD",
+    "RAD": "GRAD",
+    "GRAD": "DEG"
+};
+const dispToggler = {
+    "STD": "SCI",
+    "SCI": "ENG",
+    "ENG": "STD"
+};
 
-        // ============== CALCULATOR STATE =================================
+const radianConvFactor = {
+    "DEG": (Math.PI / 180.0), // converts degrees to radians
+    "RAD": 1,                 // converts radians to radians
+    "GRAD": (Math.PI / 200.0) // converts gradians to radians
+};
 
-        var memory = 0;
-        var startNewNumber = true;
-        var secondFunc = false;
-        var drgMode = "DEG";
-        var dispMode = "STD";
-        var outputDeque = []; // reverse polish notation list of tokens
-        var opStack = [];
-        var calcDisplay; // initialized in the body.onload handler
+// ============== CALCULATOR STATE =================================
 
-        function debugState()
-        {
-            if (!debug) return;
-            let elt = document.getElementById("debugger");
-            elt.innerHTML =
-                `
-                outputDeque=${outputDeque}<br>
-                opStack=${opStack}<br>
-                memory=${memory}<br>
-                startNewNumber=${startNewNumber}<br>
-                secondFunc=${secondFunc}<br>
-                drgMode=${drgMode}<br>
-                dispMode=${dispMode}<br>
-                `;
-        }
+var memory = 0;
+var startNewNumber = true;
+var secondFunc = false;
+var drgMode = "DEG";
+var dispMode = "STD";
+var outputDeque = []; // reverse polish notation list of tokens
+var opStack = [];
+var calcDisplay; // initialized in the body.onload handler
+
+function debugState()
+{
+    if (!debug) return;
+    let elt = document.getElementById("debugger");
+    elt.innerHTML =
+        `
+        outputDeque=${outputDeque}<br>
+        opStack=${opStack}<br>
+        memory=${memory}<br>
+        startNewNumber=${startNewNumber}<br>
+        secondFunc=${secondFunc}<br>
+        drgMode=${drgMode}<br>
+        dispMode=${dispMode}<br>
+        `;
+}
 
 
-        // ****************************************************************
-        //          F U N C T I O N S
-        // ****************************************************************
+// ****************************************************************************
+//          F U N C T I O N S
+// ****************************************************************************
 
-        function allClear()
-        {
-            calcDisplay.update("0");
-            calcDisplay.isShunted = false;
-            startNewNumber = true;
-            outputDeque = [];
-            opStack = [];
-        }
+function allClear()
+{
+    calcDisplay.clear();
+    calcDisplay.isShunted = false;
+    startNewNumber = true;
+    outputDeque = [];
+    opStack = [];
+}
 
-        function radsFromDRG(f)
-        {
-            return f * radianConvFactor[drgMode];
-        }
+function radsFromDRG(f)
+{
+    return f * radianConvFactor[drgMode];
+}
 
-        function drgFromRads(f)
-        {
-            return f / radianConvFactor[drgMode];
-        }
+function drgFromRads(f)
+{
+    return f / radianConvFactor[drgMode];
+}
 
-        function processNumber(input)
-        {
+function processNumber(input)
+{
 
-            let value = calcDisplay.displayedString;
+    let value = calcDisplay.displayedString;
 
-            // we don't need another decimal point if we already have one
-            if (input == "." && value.includes(".")) return;
+    // we don't need another decimal point if we already have one
+    if (input == "." && value.includes(".")) return;
 
-            // get rid of leading zero if we didn't just input a decimal
-            if (value === "0" && input != ".") value = "";
+    // get rid of leading zero if we didn't just input a decimal
+    if (value === "0" && input != ".") value = "";
 
-            if (startNewNumber)
+    if (startNewNumber)
+    {
+        value = (input == ".")? "0." : input;
+        startNewNumber = false;
+    }
+    else
+    {
+        value = value + input;
+    }
+
+    calcDisplay.updateWithString(value);
+
+}
+
+function executeTrig(funcName, arg)
+{
+    // The funcName parameter is the name of the trig function being utilized.
+    let result;
+    let temp;
+
+    // if inverse, call inverse trig function and convert radian result to drg
+    if (secondFunc)
+    {
+        temp = trigFuncs[funcName](arg);
+        result = drgFromRads(temp);
+    }
+    // if not inverse, convert number to radians and call trig function
+    else
+    {
+        temp = radsFromDRG(arg);
+        result = trigFuncs[funcName](temp);
+    }
+    return result;
+}
+
+function executeBinary(op, arg1, arg2)
+{
+    switch (op) {
+        case "add"    : return arg1 + arg2;
+        case "sub"    : return arg1 - arg2;
+        case "mod"    : return arg1 % arg2;
+        case "mult"   : return arg1 * arg2;
+        case "div"    : return arg1 / arg2;
+        case "yroot"  : return Math.pow(arg1, 1.0 / arg2);
+        case "ypower" : return Math.pow(arg1,arg2);
+        case "logy"   : return Math.log(arg1) / Math.log(arg2);
+        case "ee"     :
+            let plus = (arg2>0)? "+" : "";
+            let str = "" + arg1 + "e" + plus + arg2;
+            return parseFloat(str);
+    }
+}
+function executeUnary(op, arg)
+{
+    switch (op)
+    {
+        case "multinv"  : return 1.0 / arg;
+        case "plusmin"  : return -arg;
+        case "square"   : return arg * arg;
+        case "sqrt"     : return Math.sqrt(arg);
+        case "natlog"   : return Math.log(arg);
+        case "log10"    : return Math.log10(arg);
+        case "factorial":
+            let result = 1;
+            for (let i=2; i<=Math.trunc(arg); i++)
             {
-                value = (input == ".")? "0." : input;
-                startNewNumber = false;
-            }
-            else
-            {
-                value = value + input;
-            }
-
-            calcDisplay.updateWithString(value);
-
-        }
-
-        function executeTrig(funcName, arg)
-        {
-            // The funcName parameter is the name of the trig function being utilized.
-            let result;
-            let temp;
-
-            // if inverse, call inverse trig function and convert radian result to drg
-            if (secondFunc)
-            {
-                temp = trigFuncs[funcName](arg);
-                result = drgFromRads(temp);
-            }
-            // if not inverse, convert number to radians and call trig function
-            else
-            {
-                temp = radsFromDRG(arg);
-                result = trigFuncs[funcName](temp);
+                result *= i;
             }
             return result;
-        }
+    }
+}
 
-        function executeBinary(op, arg1, arg2)
+function processCommand(input)
+{
+    // ========== CLEAR BUTTONS ==========
+    if (input == "ac")
+    {
+        allClear();
+    }
+    else if (input == "del")
+    {
+        // TODO: code goes here!
+    }
+    // ========== MODE BUTTONS ==========
+    else if (input == "drg")
+    {
+        drgMode = drgToggler[drgMode];
+        document.getElementById("drgbox").innerHTML = drgMode;
+    }
+    else if (input == "disp")
+    {
+        dispMode = dispToggler[dispMode];
+        document.getElementById("dispbox").innerHTML = dispMode;
+        calcDisplay.mode = dispMode;
+        calcDisplay.update();
+    }
+    else if (input == "2nd")
+    {
+        // we just pushed the 2nd function button, so flip the indicator
+        secondFunc = !secondFunc;
+
+        // change the labels and values (aka behaviors) of the trig buttons
+        let elts = [];
+        elts.push(document.getElementById("sin"));
+        elts.push(document.getElementById("cos"));
+        elts.push(document.getElementById("tan"));
+        elts.push(document.getElementById("sinh"));
+        elts.push(document.getElementById("cosh"));
+        elts.push(document.getElementById("tanh"));
+        let elt2nd = document.getElementById("2nd");
+        let inverseStr = "<sup>-1</sup>";
+        for (let elt of elts)
         {
-            switch (op) {
-                case "add"    : return arg1 + arg2;
-                case "sub"    : return arg1 - arg2;
-                case "mod"    : return arg1 % arg2;
-                case "mult"   : return arg1 * arg2;
-                case "div"    : return arg1 / arg2;
-                case "yroot"  : return Math.pow(arg1, 1.0 / arg2);
-                case "ypower" : return Math.pow(arg1,arg2);
-                case "logy"   : return Math.log(arg1) / Math.log(arg2);
-                case "ee"     :
-                    let plus = (arg2>0)? "+" : "";
-                    let str = "" + arg1 + "e" + plus + arg2;
-                    return parseFloat(str);
-            }
-        }
-        function executeUnary(op, arg)
-        {
-            switch (op)
+            // set up the button labels and values to reflect
+            // the status of the 2nd Function button
+            if (secondFunc)
             {
-                case "multinv"  : return 1.0 / arg;
-                case "plusmin"  : return -arg;
-                case "square"   : return arg * arg;
-                case "sqrt"     : return Math.sqrt(arg);
-                case "natlog"   : return Math.log(arg);
-                case "log10"    : return Math.log10(arg);
-                case "factorial":
-                    let result = 1;
-                    for (let i=2; i<=Math.trunc(arg); i++)
-                    {
-                        result *= i;
-                    }
-                    return result;
+                elt.innerHTML += inverseStr;
+                elt.value = "a" + elt.value;
             }
-        }
-
-        function processCommand(input)
-        {
-            // ========== CLEAR BUTTONS ==========
-            if (input == "ac")
+            else
             {
-                allClear();
-            }
-            else if (input == "del")
-            {
-                // TODO: code goes here!
-            }
-            // ========== MODE BUtTONS ==========
-            else if (input == "drg")
-            {
-                drgMode = drgToggler[drgMode];
-                document.getElementById("drgbox").innerHTML = drgMode;
-            }
-            else if (input == "disp")
-            {
-                dispMode = dispToggler[dispMode];
-                document.getElementById("dispbox").innerHTML = dispMode;
-                calcDisplay.mode = dispMode;
-                calcDisplay.update();
-            }
-            else if (input == "2nd")
-            {
-                // we just pushed the 2nd function button, so flip the indicator
-                secondFunc = !secondFunc;
-
-                // change the labels and values (aka behaviors) of the trig buttons
-                let elts = [];
-                elts.push(document.getElementById("sin"));
-                elts.push(document.getElementById("cos"));
-                elts.push(document.getElementById("tan"));
-                elts.push(document.getElementById("sinh"));
-                elts.push(document.getElementById("cosh"));
-                elts.push(document.getElementById("tanh"));
-                let elt2nd = document.getElementById("2nd");
-                let inverseStr = "<sup>-1</sup>";
-                for (let elt of elts)
-                {
-                    // set up the button labels and values to reflect
-                    // the status of the 2nd Function button
-                    if (secondFunc)
-                    {
-                        elt.innerHTML += inverseStr;
-                        elt.value = "a" + elt.value;
-                    }
-                    else
-                    {
-                        elt.innerHTML = elt.innerHTML.replace(inverseStr, "");
-                        elt.value = elt.value.slice(1);
-                    }
-                }
-                // change the label and values (aka behaviors) of some other buttons
-                let logBtn = document.getElementById("log");
-                if (secondFunc)
-                {
-                    logBtn.value = "logy";
-                    logBtn.innerHTML = "log<sub>y</sub>";
-                }
-                else
-                {
-                    logBtn.value = "log10";
-                    logBtn.innerHTML = "log<sub>10</sub>";
-                }
-
-                // use a different style for the 2nd function button
-                // based on whether we are in 2nd function mode or not
-                elt2nd.className = secondFunc? "modebtnpushed" : "modebtn";
-            }
-            // ========== MEMORY BUTTONS ==========
-            else if (memOps.includes(input))
-            {
-                switch (input)
-                {
-                    case "mc":
-                        memory = 0;
-                        break;
-                    case "mr":
-                        calcDisplay.update(memory);
-                        outputDeque.push(memory);
-                        calcDisplay.isShunted = true;
-                        break;
-                    case "madd":
-                        memory += calcDisplay.value;
-                        break;
-                    case "msub":
-                        memory -= calcDisplay.value;
-                        break;
-                }
-
-                let className = (memory)? "membtnstored": "membtn";
-                document.getElementById("mr").className = className;
+                elt.innerHTML = elt.innerHTML.replace(inverseStr, "");
+                elt.value = elt.value.slice(1);
             }
         }
-
-        function evaluateRPN(aDeque)
+        // change the label and values (aka behaviors) of some other buttons
+        let logBtn = document.getElementById("log");
+        if (secondFunc)
         {
-            // Evaluates the given deque as a Reverse Polish Notation list
-            // of operators and operands.
-
-            // We will assume anything in the deque is either a number
-            // or a binary operation (unary operations will be executed
-            // immediately by this calculator, and will never be put in
-            // the deque).
-
-            let evalStack = [];
-            while (aDeque.length > 0)
-            {
-                let item = aDeque.shift();
-                if (binaryOps.includes(item))
-                {
-                    // pop 2 numbers off the eval stack and use them as arguments
-                    // to the current item (which is a binary op)
-                    let arg2 = evalStack.pop();
-                    let arg1 = evalStack.pop();
-                    evalStack.push(executeBinary(item, arg1, arg2));
-                }
-                else // it's a number
-                {
-                    // numbers are just put onto the eval stack
-                    evalStack.push(item);
-                }
-            }
-            // Now move the items from the evalStack back into aDeque
-            while (evalStack.length)
-            {
-                aDeque.push(evalStack.pop());
-            }
-            return aDeque.pop();
+            logBtn.value = "logy";
+            logBtn.innerHTML = "log<sub>y</sub>";
+        }
+        else
+        {
+            logBtn.value = "log10";
+            logBtn.innerHTML = "log<sub>10</sub>";
         }
 
-
-        function processInput(input)
+        // use a different style for the 2nd function button
+        // based on whether we are in 2nd function mode or not
+        elt2nd.className = secondFunc? "modebtnpushed" : "modebtn";
+    }
+    // ========== MEMORY BUTTONS ==========
+    else if (memOps.includes(input))
+    {
+        switch (input)
         {
-            // ========== PROCESS NUMERIC INPUT ==========
-            if (numerics.includes(input))
-            {
-                processNumber(input);
-                return;
-            }
-
-            // If we got here, the user just pressed a non-number button,
-            // so we are done entering this number and can get ready to
-            // start a new number.
-            startNewNumber = true;
-            if (!calcDisplay.isShunted)
-            {
-                // if the number displayed hasn't been shunted yet,
-                // shunt it by pushing it onto the end of the outputDeque
-                outputDeque.push(calcDisplay.value);
+            case "mc":
+                memory = 0;
+                break;
+            case "mr":
+                calcDisplay.update(memory);
+                outputDeque.push(memory);
                 calcDisplay.isShunted = true;
-            }
-
-
-            // ========== NON-CALCULATION COMMAND BUTTONS ==========
-            if ([...memOps,...clearOps,...modeOps].includes(input))
-            {
-                processCommand(input);
-            }
-            // ========== BINARY FUNCTION BUTTONS ==========
-            else if (binaryOps.includes(input))
-            {
-                // // We just got a binary operation.  Push it onto the stack
-                // // along with whatever is shown in the display.
-                // floatStack.push(calcDisplay.value);
-                // floatStack.push(input);
-
-                let topOp = opStack.length? opStack[0]: "EMPTY";
-                if (opPrecedence[input] > opPrecedence[topOp])
-                {
-                    opStack.unshift(input);
-                }
-                else if (opPrecedence[input] == opPrecedence[topOp])
-                {
-                    let arg2 = outputDeque.pop(); // yes, arg2 is popped first!
-                    let arg1 = outputDeque.pop();
-                    topOp = opStack.shift(); // topOp is already this value, but we need to get it off the stack
-                    let result = executeBinary(topOp, arg1, arg2);
-                    outputDeque.push(result);
-                    opStack.unshift(input);
-                    calcDisplay.update(result);
-                    calcDisplay.isShunted = true;
-                }
-                else // opPrecedence[input] < opPrecedence[topOp]
-                {
-                    while (opStack.length)
-                    {
-                        outputDeque.push(opStack.shift());
-                    }
-                    let result = evaluateRPN(outputDeque);
-                    outputDeque.push(result);
-                    opStack.unshift(input);
-                    calcDisplay.update(result);
-                    calcDisplay.isShunted = true;
-                }
-
-            }
-            // ========== EQUALS BUTTON ==========
-            else if (input == "equals")
-            {
-                // copy the remaining items in the opStack to the outputDeque
-                while (opStack.length > 0) outputDeque.push(opStack.shift());
-
-                // evaluate and display
-                let result = evaluateRPN(outputDeque);
-                outputDeque.push(result);
-                calcDisplay.update(result);
-                calcDisplay.isShunted = true;
-            }
-            // ========== UNARY (IMMEDIATE) FUNCTIONS ==========
-            else if (trigOps.includes(input))
-            {
-                //let arg = calcDisplay.value;
-                //calcDisplay.update(executeTrig(input, arg));
-                let arg = outputDeque.pop();
-                let ans = executeTrig(input, arg);
-                outputDeque.push(ans);
-                calcDisplay.update(ans);
-                calcDisplay.isShunted = true;
-            }
-            else if (unaryOps.includes(input))
-            {
-                let arg = outputDeque.pop();
-                let ans = executeUnary(input, arg);
-                outputDeque.push(ans);
-                calcDisplay.update(ans);
-                calcDisplay.isShunted = true;
-            }
-            // ========== LEFT PARENTHESES ==========
-            else if (input === "(")
-            {
-                // I'm pushing the left paren onto the outputDeque even though
-                // it isn't really an operation.  I'm using it to mark the
-                // start of a subexpression.  When I enoucnter the right paren
-                // I'm going to copy the entire outputDeque from the last
-                // left paren to the end into a new, temporary outputDeque,
-                // and then I'll evaluate that.
-                outputDeque.push(input);
-
-                // I also need to mark the opStack with this left paren as well
-                opStack.unshift(input);
-            }
-            // ========== RIGHT PARENTHESES ==========
-            else if (input === ")")
-            {
-
-                // copy the outputDeque from the most recent left paren
-                // up to the end into a new outputDeque
-                let tempDeque = [];
-                let tempItem = outputDeque.pop();
-                while (tempItem !== "(" && outputDeque.length)
-                {
-                    // if no left paren is found, this will copy the entire deque
-                    tempDeque.unshift(tempItem);
-                    tempItem = outputDeque.pop();
-                }
-
-                let topOp = opStack.length? opStack[0]: "EMPTY";
-                while (topOp != "(" && opStack.length)
-                {
-                    topOp = opStack.shift();
-                    tempDeque.push(topOp);
-                    topOp = opStack.length? opStack[0]: "EMPTY";
-                }
-                if (topOp != "(")
-                {
-                    // TODO: HANDLE MISMATCH PARENTHESES
-                }
-                opStack.shift();
-                let result = evaluateRPN(tempDeque);
-                outputDeque.push(result);
-                calcDisplay.update(result);
-                calcDisplay.isShunted = true;
-            }
-            // ========== CONSTANT BUTTONS ==========
-            else if (input == "e")
-            {
-                calcDisplay.update(Math.E);
-                outputDeque.push(Math.E);
-                calcDisplay.isShunted = true;
-            }
-            else if (input == "pi")
-            {
-                calcDisplay.update(Math.PI);
-                outputDeque.push(Math.E);
-                calcDisplay.isShunted = true;
-            }
-            else if (input == "random")
-            {
-                calcDisplay.update(Math.random());
-                outputDeque.push(Math.E);
-                calcDisplay.isShunted = true;
-            }
-
+                break;
+            case "madd":
+                memory += calcDisplay.value;
+                break;
+            case "msub":
+                memory -= calcDisplay.value;
+                break;
         }
 
-        // ****************************************************************
-        //          E V E N T   H A N D L E R S
-        // ****************************************************************
+        let className = (memory)? "membtnstored": "membtn";
+        document.getElementById("mr").className = className;
+    }
+}
 
-        // BUTTON HANDLER - handles every click of every button
-        window.onclick = function(e)
+function evaluateRPN(aDeque)
+{
+    // Evaluates the given deque as a Reverse Polish Notation list
+    // of operators and operands.
+
+    // We will assume anything in the deque is either a number
+    // or a binary operation (unary operations will be executed
+    // immediately by this calculator, and will never be put in
+    // the deque).
+
+    let evalStack = [];
+    while (aDeque.length > 0)
+    {
+        let item = aDeque.shift();
+        if (binaryOps.includes(item))
         {
-            if (e.target.tagName == "BUTTON")
-            {
-                processInput(e.target.value);
-            }
-            debugState();
-        };
-
-        // KEYSTROKE HANDLER - handles numeric inputs on the keyboard
-        document.addEventListener("keydown", function(e)
-        {
-            let valids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-                        '.', '/', '*', '-', '+', 'Enter', 'Escape'];
-
-            if (e.key == "Enter")
-            {
-                // if enter was pressed, we definitely do not want
-                // the currently active button to be "clicked",
-                // because it might not be the "=" button, so
-                // let's prevent that default behavior
-                e.preventDefault();
-            }
-            if (valids.includes(e.key))
-            {
-                let button = e.key;
-                switch(button)
-                {
-                    case "+": button = "add"; break;
-                    case "-": button = "sub"; break;
-                    case "*": button = "mult"; break;
-                    case "/": button = "div"; break;
-                    case "Enter": button = "equals"; break;
-                    case "Escape": button = "ac"; break;
-                }
-                processInput(button);
-                debugState();
-            }
-        }, false);
-
-        // LOAD HANDLER - make sure the state is reset
-        function loadBody()
-        {
-            calcDisplay = new CalcDisplay("calcdisplay", 13);
-            memory = 0;
-            secondFunc = false;
-            drgMode = "DEG";
-            dispMode = "STD";
-            allClear();
+            // pop 2 numbers off the eval stack and use them as arguments
+            // to the current item (which is a binary op)
+            let arg2 = evalStack.pop();
+            let arg1 = evalStack.pop();
+            evalStack.push(executeBinary(item, arg1, arg2));
         }
+        else // it's a number
+        {
+            // numbers are just put onto the eval stack
+            evalStack.push(item);
+        }
+    }
+    // Now move the items from the evalStack back into aDeque
+    while (evalStack.length)
+    {
+        aDeque.push(evalStack.pop());
+    }
+    return aDeque.pop();
+}
+
+
+function processInput(input)
+{
+    // ========== PROCESS NUMERIC INPUT ========================================
+    if (numerics.includes(input))
+    {
+        processNumber(input);
+        return;
+    }
+
+    // ========== NON-CALCULATION COMMAND BUTTONS ==============================
+    if ([...memOps,...clearOps,...modeOps].includes(input))
+    {
+        processCommand(input);
+        return;
+    }
+
+    // ========== CONSTANT BUTTONS =============================================
+    if (constantOps.includes(input))
+    {
+        let result;
+        switch(input)
+        {
+            case "e":      result = Math.E; break;
+            case "pi":     result = Math.PI; break;
+            case "random": rseult = Math.random(); break;
+        }
+        calcDisplay.update(result);
+        return;
+    }
+
+    //==========================================================================
+    // If we got here, the user pressed a mathematical function button so we must:
+    //    1) store the currently displayed value for future computation
+    //       (if it hasn't been stored already)
+    //    2) prepare to start a new number
+    //==========================================================================
+    startNewNumber = true;
+    if (!calcDisplay.isShunted && input != "(" && input != ")")
+    {
+        outputDeque.push(calcDisplay.value);
+        calcDisplay.isShunted = true;
+    }
+
+
+    // ========== BINARY FUNCTION BUTTONS ======================================
+    if (binaryOps.includes(input))
+    {
+        // // We just got a binary operation.  Push it onto the stack
+        // // along with whatever is shown in the display.
+        // floatStack.push(calcDisplay.value);
+        // floatStack.push(input);
+
+        let topOp = opStack.length? opStack[0]: "EMPTY";
+        if (opPrecedence[input] > opPrecedence[topOp])
+        {
+            opStack.unshift(input);
+        }
+        else if (opPrecedence[input] == opPrecedence[topOp])
+        {
+            let arg2 = outputDeque.pop(); // yes, arg2 is popped first!
+            let arg1 = outputDeque.pop();
+            topOp = opStack.shift(); // topOp is already this value, but we need to get it off the stack
+            let result = executeBinary(topOp, arg1, arg2);
+            outputDeque.push(result);
+            opStack.unshift(input);
+            calcDisplay.update(result);
+            calcDisplay.isShunted = true;
+        }
+        else // opPrecedence[input] < opPrecedence[topOp]
+        {
+            while (opStack.length)
+            {
+                outputDeque.push(opStack.shift());
+            }
+            let result = evaluateRPN(outputDeque);
+            outputDeque.push(result);
+            opStack.unshift(input);
+            calcDisplay.update(result);
+            calcDisplay.isShunted = true;
+        }
+
+    }
+    // ========== EQUALS BUTTON ================================================
+    else if (input == "equals")
+    {
+        // copy the remaining items in the opStack to the outputDeque
+        while (opStack.length > 0) outputDeque.push(opStack.shift());
+
+        // evaluate and display
+        let result = evaluateRPN(outputDeque);
+        outputDeque.push(result);
+        calcDisplay.update(result);
+        calcDisplay.isShunted = true;
+    }
+    // ========== UNARY (IMMEDIATE) FUNCTIONS ==================================
+    else if (trigOps.includes(input))
+    {
+        //let arg = calcDisplay.value;
+        //calcDisplay.update(executeTrig(input, arg));
+        let arg = outputDeque.pop();
+        let ans = executeTrig(input, arg);
+        outputDeque.push(ans);
+        calcDisplay.update(ans);
+        calcDisplay.isShunted = true;
+    }
+    else if (unaryOps.includes(input))
+    {
+        let arg = outputDeque.pop();
+        let ans = executeUnary(input, arg);
+        outputDeque.push(ans);
+        calcDisplay.update(ans);
+        calcDisplay.isShunted = true;
+    }
+    // ========== LEFT PARENTHESES =============================================
+    else if (input === "(")
+    {
+        // I'm pushing the left paren onto the outputDeque even though
+        // it isn't really an operation.  I'm using it to mark the
+        // start of a subexpression.  When I enoucnter the right paren
+        // I'm going to copy the entire outputDeque from the last
+        // left paren to the end into a new, temporary outputDeque,
+        // and then I'll evaluate that.
+        outputDeque.push(input);
+
+        // I also need to mark the opStack with this left paren as well
+        opStack.unshift(input);
+    }
+    // ========== RIGHT PARENTHESES ============================================
+    else if (input === ")")
+    {
+
+        // copy the outputDeque from the most recent left paren
+        // up to the end into a new outputDeque
+        let tempDeque = [];
+        let tempItem = outputDeque.pop();
+        while (tempItem !== "(" && outputDeque.length)
+        {
+            // if no left paren is found, this will copy the entire deque
+            tempDeque.unshift(tempItem);
+            tempItem = outputDeque.pop();
+        }
+
+        let topOp = opStack.length? opStack[0]: "EMPTY";
+        while (topOp != "(" && opStack.length)
+        {
+            topOp = opStack.shift();
+            tempDeque.push(topOp);
+            topOp = opStack.length? opStack[0]: "EMPTY";
+        }
+        if (topOp != "(")
+        {
+            // TODO: HANDLE MISMATCH PARENTHESES
+        }
+        opStack.shift();
+        let result = evaluateRPN(tempDeque);
+        outputDeque.push(result);
+        calcDisplay.update(result);
+        calcDisplay.isShunted = true;
+    }
+
+}
+
+// ****************************************************************************
+//          E V E N T   H A N D L E R S
+// ****************************************************************************
+
+// BUTTON HANDLER - handles every click of every button
+window.onclick = function(e)
+{
+    if (e.target.tagName == "BUTTON")
+    {
+        processInput(e.target.value);
+    }
+    debugState();
+};
+
+// KEYSTROKE HANDLER - handles numeric inputs on the keyboard
+document.addEventListener("keydown", function(e)
+{
+    let valids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                '.', '/', '*', '-', '+', 'Enter', 'Escape'];
+
+    if (e.key == "Enter")
+    {
+        // if enter was pressed, we definitely do not want
+        // the currently active button to be "clicked",
+        // because it might not be the "=" button, so
+        // let's prevent that default behavior
+        e.preventDefault();
+    }
+    if (valids.includes(e.key))
+    {
+        let button = e.key;
+        switch(button)
+        {
+            case "+": button = "add"; break;
+            case "-": button = "sub"; break;
+            case "*": button = "mult"; break;
+            case "/": button = "div"; break;
+            case "Enter": button = "equals"; break;
+            case "Escape": button = "ac"; break;
+        }
+        processInput(button);
+        debugState();
+    }
+}, false);
+
+// LOAD HANDLER - make sure the state is reset
+function loadBody()
+{
+    calcDisplay = new CalcDisplay("calcdisplay", 13);
+    memory = 0;
+    secondFunc = false;
+    drgMode = "DEG";
+    dispMode = "STD";
+    allClear();
+}
 <!-- ************************************************************************-->
 <!-- ************************************************************************-->
 <!-- ************************************************************************-->
