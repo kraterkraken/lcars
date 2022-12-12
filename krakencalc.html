@@ -229,15 +229,15 @@ const memOps = ['mr','mc','madd','msub'];
 const modeOps = ['2nd','drg','disp'];
 const clearOps = ['ac','del'];
 const numerics = ['0','1','2','3','4','5','6','7','8','9','.'];
-const binaryOps = ['add','sub','mod','mult','div','yroot','ypower','logy','ee'];
+const binaryOps = ['+','-','%','*','/','yroot','ypower','logy','ee'];
 const unaryOps = ['multinv', 'plusmin','square','sqrt','natlog','log10','factorial'];
 const trigOps = ['sin','cos','tan','sinh','cosh','tanh',
                 'asin','acos','atan','asinh','acosh','atanh'];
 const constantOps = ['e','pi','random'];
 const opPrecedence = {
         "EMPTY":0,
-        "add":1, "sub":1,
-        "mod":2, "mult":2, "div":2,
+        "+":1, "-":1,
+        "%":2, "*":2, "/":2,
         "yroot":3, "ypower": 3, "logy":3, "ee":3,
         'multinv':3, 'plusmin':3, 'square':3, 'sqrt':3, 'natlog':3, 'log10':3, 'factorial':3,
         "(":0, ")":0
@@ -375,11 +375,11 @@ function executeTrig(funcName, arg)
 function executeBinary(op, arg1, arg2)
 {
     switch (op) {
-        case "add"    : return arg1 + arg2;
-        case "sub"    : return arg1 - arg2;
-        case "mod"    : return arg1 % arg2;
-        case "mult"   : return arg1 * arg2;
-        case "div"    : return arg1 / arg2;
+        case "+"    : return arg1 + arg2;
+        case "-"    : return arg1 - arg2;
+        case "%"    : return arg1 % arg2;
+        case "*"   : return arg1 * arg2;
+        case "/"    : return arg1 / arg2;
         case "yroot"  : return Math.pow(arg1, 1.0 / arg2);
         case "ypower" : return Math.pow(arg1,arg2);
         case "logy"   : return Math.log(arg1) / Math.log(arg2);
@@ -606,6 +606,8 @@ function processInput(input)
             let result = executeBinary(topOp, arg1, arg2);
             opStack.unshift(input);
             calcDisplay.update(result);
+            outputDeque.push(result);
+            calcDisplay.isShunted = true;
         }
         else // opPrecedence[input] < opPrecedence[topOp]
         {
@@ -616,6 +618,8 @@ function processInput(input)
             let result = evaluateRPN(outputDeque);
             opStack.unshift(input);
             calcDisplay.update(result);
+            outputDeque.push(result);
+            calcDisplay.isShunted = true;
         }
 
     }
@@ -717,11 +721,7 @@ document.addEventListener("keydown", function(e)
         let button = e.key;
         switch(button)
         {
-            case "+": button = "add"; break;
-            case "-": button = "sub"; break;
-            case "*": button = "mult"; break;
-            case "/": button = "div"; break;
-            case "Enter": button = "equals"; break;
+            case "Enter":  button = "equals"; break;
             case "Escape": button = "ac"; break;
         }
         processInput(button);
@@ -771,14 +771,14 @@ function loadBody()
                 <button value="msub" class="membtn">M-</button>
                 <button id="mr" value="mr" class="membtn">MR</button>
 
-                <button value="mod" class="funbtn">mod</button>
+                <button value="%" class="funbtn">mod</button>
                 <button value="square" class="funbtn">x<sup>2</sup></button>
                 <button value="ypower" class="funbtn">x<sup>y</sup></button>
                 <button value="multinv" class="funbtn">1/x</button>
                 <button value="ac" class="clrbtn">AC</button>
                 <button value="del" class="clrbtn">DEL</button>
-                <button value="div" class="opnbtn">&#247</button>
-                <button value="mult" class="opnbtn">&times;</button>
+                <button value="/" class="opnbtn">&#247</button>
+                <button value="*" class="opnbtn">&times;</button>
 
                 <button value="factorial" class="funbtn">x!</button>
                 <button value="sqrt" class="funbtn">&radic;</button>
@@ -787,7 +787,7 @@ function loadBody()
                 <button value="7" class="numbtn">7</button>
                 <button value="8" class="numbtn">8</button>
                 <button value="9" class="numbtn">9</button>
-                <button value="sub" class="opnbtn">-</button>
+                <button value="-" class="opnbtn">-</button>
 
                 <button id="sin" value="sin" class="funbtn">sin</button>
                 <button id="cos" value="cos" class="funbtn">cos</button>
@@ -796,7 +796,7 @@ function loadBody()
                 <button value="4" class="numbtn">4</button>
                 <button value="5" class="numbtn">5</button>
                 <button value="6" class="numbtn">6</button>
-                <button value="add" class="opnbtn">+</button>
+                <button value="+" class="opnbtn">+</button>
 
                 <button id="sinh" value="sinh" class="funbtn">sinh</button>
                 <button id="cosh" value="cosh" class="funbtn">cosh</button>
