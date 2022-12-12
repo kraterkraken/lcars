@@ -490,8 +490,6 @@ function processCommand(input)
                 break;
             case "mr":
                 calcDisplay.update(memory);
-                outputDeque.push(memory);
-                calcDisplay.isShunted = true;
                 break;
             case "madd":
                 memory += calcDisplay.value;
@@ -567,7 +565,7 @@ function processInput(input)
         {
             case "e":      result = Math.E; break;
             case "pi":     result = Math.PI; break;
-            case "random": rseult = Math.random(); break;
+            case "random": result = Math.random(); break;
         }
         calcDisplay.update(result);
         return;
@@ -580,7 +578,7 @@ function processInput(input)
     //    2) prepare to start a new number
     //==========================================================================
     startNewNumber = true;
-    if (!calcDisplay.isShunted && input != "(" && input != ")")
+    if (!calcDisplay.isShunted && input != "(")
     {
         outputDeque.push(calcDisplay.value);
         calcDisplay.isShunted = true;
@@ -606,10 +604,8 @@ function processInput(input)
             let arg1 = outputDeque.pop();
             topOp = opStack.shift(); // topOp is already this value, but we need to get it off the stack
             let result = executeBinary(topOp, arg1, arg2);
-            outputDeque.push(result);
             opStack.unshift(input);
             calcDisplay.update(result);
-            calcDisplay.isShunted = true;
         }
         else // opPrecedence[input] < opPrecedence[topOp]
         {
@@ -618,10 +614,8 @@ function processInput(input)
                 outputDeque.push(opStack.shift());
             }
             let result = evaluateRPN(outputDeque);
-            outputDeque.push(result);
             opStack.unshift(input);
             calcDisplay.update(result);
-            calcDisplay.isShunted = true;
         }
 
     }
@@ -633,9 +627,7 @@ function processInput(input)
 
         // evaluate and display
         let result = evaluateRPN(outputDeque);
-        outputDeque.push(result);
         calcDisplay.update(result);
-        calcDisplay.isShunted = true;
     }
     // ========== UNARY (IMMEDIATE) FUNCTIONS ==================================
     else if (trigOps.includes(input))
@@ -644,17 +636,13 @@ function processInput(input)
         //calcDisplay.update(executeTrig(input, arg));
         let arg = outputDeque.pop();
         let ans = executeTrig(input, arg);
-        outputDeque.push(ans);
         calcDisplay.update(ans);
-        calcDisplay.isShunted = true;
     }
     else if (unaryOps.includes(input))
     {
         let arg = outputDeque.pop();
         let ans = executeUnary(input, arg);
-        outputDeque.push(ans);
         calcDisplay.update(ans);
-        calcDisplay.isShunted = true;
     }
     // ========== LEFT PARENTHESES =============================================
     else if (input === "(")
@@ -698,9 +686,7 @@ function processInput(input)
         }
         opStack.shift();
         let result = evaluateRPN(tempDeque);
-        outputDeque.push(result);
         calcDisplay.update(result);
-        calcDisplay.isShunted = true;
     }
 
 }
