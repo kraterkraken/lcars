@@ -180,11 +180,18 @@ class CalcDisplay {
         this._isShunted = false;
     }
     round(item) {
+        // if the item being rounded is an integer, don't round it
+        if (!item.toString().includes(".")) {
+            return item;
+        }
+
+        // if the item being rounded is in sci-notation, just round the mantissa
         if (item.toString().includes("e")) {
             let arr = item.toString().split("e");
             let mantissa = Number(Math.round(arr[0]+"e"+this._precision)+"e-"+this._precision);
             return Number( mantissa + "e" + arr[1] );
         }
+        // else round it as a standard-notation real number with decimal part
         else {
             return Number(Math.round(item+"e"+this._precision)+"e-"+this._precision);
         }
