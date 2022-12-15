@@ -180,7 +180,14 @@ class CalcDisplay {
         this._isShunted = false;
     }
     round(item) {
-        return Number(Math.round(item+"e"+this._precision)+"e-"+this._precision);
+        if (item.toString().includes("e")) {
+            let arr = item.toString().split("e");
+            let mantissa = Number(Math.round(arr[0]+"e"+this._precision)+"e-"+this._precision);
+            return Number( mantissa + "e" + arr[1] );
+        }
+        else {
+            return Number(Math.round(item+"e"+this._precision)+"e-"+this._precision);
+        }
     }
     format(item) {
         // formats the string based on the display mode
