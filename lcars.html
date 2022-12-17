@@ -69,6 +69,7 @@
                 height: var(--LcarsUpperHeight);
                 background-color: black;
                 margin: auto;
+                margin-bottom: 10px;
             }
             .LcarsLowerArea {
                 border-radius: var(--CurlRadius) 0px 0px 0px;
@@ -101,10 +102,16 @@
             }
 
             .sidebutton {
+                position: relative;
+            }
+            .sidebuttonText {
+                position: absolute;
+                bottom: 0px;
                 text-align: right;
+                width: var(--SideButtonWidth);
                 color: black;
                 font-size: 13px;
-                padding: 40px 5px 5px 5px;
+                padding: 5px 5px 5px 5px;
             }
 
             .UpperBtnA { background-color: var(--Purple01); }
@@ -134,7 +141,7 @@
         <div class="LcarsUpperArea">
             <div class="BlackUpperArea">UPPER</div>
 
-            <div class="UpperBtnA sidebutton">UPPER BTN 1</div><div class="stretch"></div>
+            <div class="UpperBtnA sidebutton"><div class="sidebuttonText">UPPER BTN 1</div></div>          <div class="stretch"></div>
             <div class="UpperCurl "></div>
             <div class="UpperDividerA"></div>
             <div class="UpperDividerB"></div>
@@ -142,7 +149,6 @@
             <div class="UpperDividerD"></div>
 
         </div>
-        <div>SPACER</div>
         <div class="LcarsLowerArea">
             <div class="BlackLowerArea">LOWER</div>
 
@@ -151,11 +157,11 @@
             <div class="LowerDividerB"></div>
             <div class="LowerDividerC"></div>
             <div class="LowerDividerD"></div>
-            <div class="LowerBtnA sidebutton">LOWER BTN A</div>          <div class="stretch"></div>
-            <div class="LowerBtnB sidebutton">LOWER BTN B</div>          <div class="stretch"></div>
-            <div class="LowerBtnC sidebutton">LOWER BTN C</div>          <div class="stretch"></div>
-            <div class="LowerBtnD sidebutton">LOWER BTN D</div>          <div class="stretch"></div>
-            <div class="LowerBtnE sidebutton">LOWER BTN E</div>          <div class="stretch"></div>
+            <div class="LowerBtnA sidebutton"><div class="sidebuttonText">LOWER BTN A</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnB sidebutton"><div class="sidebuttonText">LOWER BTN B</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnC sidebutton"><div class="sidebuttonText">LOWER BTN C</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnD sidebutton"><div class="sidebuttonText">LOWER BTN D</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnE sidebutton"><div class="sidebuttonText">LOWER BTN E</div></div>          <div class="stretch"></div>
 
         </div>
 
