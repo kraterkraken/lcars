@@ -4,147 +4,158 @@
         <title>LCARS Concept</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Antonio">
         <style>
+
             /********** CSS RESET **********/
             html {
                 box-sizing: border-box;
+                background-color: black;
             }
             * {
                 margin: 0;
                 padding: 0;
-                /*border: 1px solid white;*/
+                border: 0px solid white;
                 box-sizing: inherit;
                 font-family: "Antonio";
-                background-color: black;
                 color: white;
             }
+
+            /********** VARIABLES **********/
             :root {
-              --curlvwidth: 100px;
-              --curlhheight: 15px;
-              --topheight: 170px;
-              --bottomheight: 400px;
-              --curlradius: 80px;
-              --blackarearadius:30px;
+              --SideButtonWidth: 100px;
+              --HorizDividerHeight: 15px;
+              --LcarsUpperHeight: 170px;
+              --LcarsLowerHeight: 400px;
+              --CurlRadius: 80px;
+              --CurlHeight: 80px;
+              --BlackBoxRadius:30px;
+
+              --Purple01: #cc99cc;
+              --Purple02: #9999ff;
+              --Orange01: #ff9966;
+              --Orange02: #ff9900;
+              --Pink01: #cc6666;
+
             }
 
-            .topcurl {
+            /********** GRID STUFF **********/
+            .LcarsUpperArea {
                 display: grid;
-                grid-template-columns: 45% 2% 15% 5% 1fr;
-                grid-template-rows: 1fr 80px;
+                grid-template-columns: var(--SideButtonWidth) 38% 2% 15% 5% 1fr;
+                grid-template-rows: 1fr var(--CurlHeight);
                 grid-row-gap: 5px;
                 grid-column-gap: 5px;
             }
-            .bottomcurl {
+            .LcarsLowerArea {
                 display: grid;
-                grid-template-columns: 45% 2% 15% 5% 1fr;
-                grid-template-rows: 80px 1fr 1fr 1fr 1fr 1fr;
+                grid-template-columns: var(--SideButtonWidth) 38% 2% 15% 5% 1fr;
+                grid-template-rows: var(--CurlHeight) 1fr 1fr 1fr 1fr 1fr;
                 grid-row-gap: 5px;
                 grid-column-gap: 5px;
             }
-
             .stretch {
+                grid-column-start: 2;
+                grid-column-end: 7;
+            }
+            .LowerCurl, .UpperCurl {
                 grid-column-start: 1;
-                grid-column-end: 6;
+                grid-column-end: 3;
             }
 
-            .topcurl {
-                border-radius: 0px 0px 0px var(--curlradius);
+            /*********** STYLING **********/
+            .LcarsUpperArea {
+                border-radius: 0px 0px 0px var(--CurlRadius);
                 position: relative;
                 width: 80%;
-                height: var(--topheight);
+                height: var(--LcarsUpperHeight);
                 background-color: black;
                 margin: auto;
             }
-            .bottomcurl {
-                border-radius: var(--curlradius) 0px 0px 0px;
+            .LcarsLowerArea {
+                border-radius: var(--CurlRadius) 0px 0px 0px;
                 position: relative;
                 width: 80%;
-                height: var(--bottomheight);
+                height: var(--LcarsLowerHeight);
                 background-color: black;
                 margin: auto;
             }
 
-            .topblackarea {
-                border-radius: 0px 0px 0px var(--blackarearadius);
+            .BlackUpperArea {
+                background-color: black;
+                border-radius: 0px 0px 0px var(--BlackBoxRadius);
                 position: absolute;
                 top: 0px;
-                left: var(--curlvwidth);
-                height: calc(var(--topheight) - var(--curlhheight));
-                width: calc(100% - var(--curlvwidth));
+                left: var(--SideButtonWidth);
+                height: calc(var(--LcarsUpperHeight) - var(--HorizDividerHeight));
+                width: calc(100% - var(--SideButtonWidth));
                 z-index: 99;
             }
-            .bottomblackarea {
-                border-radius: var(--blackarearadius) 0px 0px 0px;
+            .BlackLowerArea {
+                background-color: black;
+                border-radius: var(--BlackBoxRadius) 0px 0px 0px;
                 position: absolute;
-                top: var(--curlhheight);
-                left: var(--curlvwidth);
-                height: calc(var(--bottomheight) - var(--curlhheight));
-                width: calc(100% - var(--curlvwidth));
+                top: var(--HorizDividerHeight);
+                left: var(--SideButtonWidth);
+                height: calc(var(--LcarsLowerHeight) - var(--HorizDividerHeight));
+                width: calc(100% - var(--SideButtonWidth));
                 z-index: 99;
             }
 
             .sidebutton {
+                text-align: right;
                 color: black;
                 font-size: 13px;
-                padding: 5px 5px 5px 5px;
+                padding: 40px 5px 5px 5px;
             }
 
-            .test {
-                height: 99px;
-                width: 500px;
-                background-color: green;
-                line-height: 99px;
-                text-align: right;
-            }
+            .UpperBtnA { background-color: var(--Purple01); }
+            .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius); }
+            .UpperDividerA { background-color: var(--Orange01); }
+            .UpperDividerB { background-color: var(--Pink01); }
+            .UpperDividerC { background-color: var(--Purple01); }
+            .UpperDividerD { background-color: var(--Purple01); }
+            .UpperDividere { background-color: var(--Purple01); }
 
-            .top_row1 { background-color: #cc99cc; }
-            .top_row2a { background-color: #9999ff; border-radius: 0px 0px 0px var(--curlradius); }
-            .top_row2b { background-color: #ff9966; }
-            .top_row2c { background-color: #cc6666; }
-            .top_row2d { background-color: #cc99cc; }
-            .top_row2e { background-color: #cc99cc; }
-            .top_row2e { background-color: #cc99cc; }
-
-            .bottom_row1a { background-color: #cc6666; border-radius: var(--curlradius) 0px 0px 0px; }
-            .bottom_row1b { background-color: #ff9966; }
-            .bottom_row1c { background-color: #9999ff; }
-            .bottom_row1d { background-color: #cc99cc; }
-            .bottom_row1e { background-color: #ff9966; }
-            .bottom_row2 { background-color: #cc6666; }
-            .bottom_row3 { background-color: #ff9900; }
-            .bottom_row4 { background-color: #ff9966; }
-            .bottom_row5 { background-color: #ff9966; }
-            .bottom_row6 { background-color: #9999ff; }
+            .LowerCurl { background-color: var(--Pink01); border-radius: var(--CurlRadius) 0px 0px 0px; }
+            .LowerDividerA { background-color: var(--Orange01); }
+            .LowerDividerB { background-color: var(--Purple02); }
+            .LowerDividerC { background-color: var(--Purple01); }
+            .LowerDividerD { background-color: var(--Orange01); }
+            .LowerBtnA { background-color: var(--Pink01); }
+            .LowerBtnB { background-color: var(--Orange02); }
+            .LowerBtnC { background-color: var(--Orange01); }
+            .LowerBtnD { background-color: var(--Orange01); }
+            .LowerBtnE { background-color: var(--Purple02); }
 
 
         </style>
     </head>
     <body>
 
-        <div class="topcurl">
-            <div class="topblackarea">TOP</div>
+        <div class="LcarsUpperArea">
+            <div class="BlackUpperArea">UPPER</div>
 
-            <div class="top_row1 stretch sidebutton">TOP ROW 1</div>
-            <div class="top_row2a sidebutton"></div>
-            <div class="top_row2b sidebutton"></div>
-            <div class="top_row2c sidebutton"></div>
-            <div class="top_row2d sidebutton"></div>
-            <div class="top_row2e sidebutton"></div>
+            <div class="UpperBtnA sidebutton">UPPER BTN 1</div><div class="stretch"></div>
+            <div class="UpperCurl "></div>
+            <div class="UpperDividerA"></div>
+            <div class="UpperDividerB"></div>
+            <div class="UpperDividerC"></div>
+            <div class="UpperDividerD"></div>
 
         </div>
         <div>SPACER</div>
-        <div class="bottomcurl">
-            <div class="bottomblackarea">BOTTOM</div>
+        <div class="LcarsLowerArea">
+            <div class="BlackLowerArea">LOWER</div>
 
-            <div class="bottom_row1a sidebutton"></div>
-            <div class="bottom_row1b sidebutton"></div>
-            <div class="bottom_row1c sidebutton"></div>
-            <div class="bottom_row1d sidebutton"></div>
-            <div class="bottom_row1e sidebutton"></div>
-            <div class="bottom_row2 stretch sidebutton">BOTTOM ROW 2</div>
-            <div class="bottom_row3 stretch sidebutton">BOTTOM ROW 3</div>
-            <div class="bottom_row4 stretch sidebutton">BOTTOM ROW 4</div>
-            <div class="bottom_row5 stretch sidebutton">BOTTOM ROW 5</div>
-            <div class="bottom_row6 stretch sidebutton">BOTTOM ROW 6</div>
+            <div class="LowerCurl "></div>
+            <div class="LowerDividerA"></div>
+            <div class="LowerDividerB"></div>
+            <div class="LowerDividerC"></div>
+            <div class="LowerDividerD"></div>
+            <div class="LowerBtnA sidebutton">LOWER BTN A</div>          <div class="stretch"></div>
+            <div class="LowerBtnB sidebutton">LOWER BTN B</div>          <div class="stretch"></div>
+            <div class="LowerBtnC sidebutton">LOWER BTN C</div>          <div class="stretch"></div>
+            <div class="LowerBtnD sidebutton">LOWER BTN D</div>          <div class="stretch"></div>
+            <div class="LowerBtnE sidebutton">LOWER BTN E</div>          <div class="stretch"></div>
 
         </div>
 
