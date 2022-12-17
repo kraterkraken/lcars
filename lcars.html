@@ -16,6 +16,7 @@
                 border: 0px solid white;
                 box-sizing: inherit;
                 font-family: "Antonio";
+                font-weight: bold;
                 color: white;
             }
 
@@ -80,25 +81,23 @@
                 margin: auto;
             }
 
-            .BlackUpperArea {
+            .BlackUpperArea, .BlackLowerArea {
                 background-color: black;
-                border-radius: 0px 0px 0px var(--BlackBoxRadius);
                 position: absolute;
-                top: 0px;
-                left: var(--SideButtonWidth);
-                height: calc(var(--LcarsUpperHeight) - var(--HorizDividerHeight));
-                width: calc(100% - var(--SideButtonWidth));
                 z-index: 99;
+                width: calc(100% - var(--SideButtonWidth));
+                left: var(--SideButtonWidth);
+                text-align: center;
+            }
+            .BlackUpperArea {
+                border-radius: 0px 0px 0px var(--BlackBoxRadius);
+                top: 0px;
+                height: calc(var(--LcarsUpperHeight) - var(--HorizDividerHeight));
             }
             .BlackLowerArea {
-                background-color: black;
                 border-radius: var(--BlackBoxRadius) 0px 0px 0px;
-                position: absolute;
                 top: var(--HorizDividerHeight);
-                left: var(--SideButtonWidth);
                 height: calc(var(--LcarsLowerHeight) - var(--HorizDividerHeight));
-                width: calc(100% - var(--SideButtonWidth));
-                z-index: 99;
             }
 
             .sidebutton {
