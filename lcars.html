@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LCARS Concept</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Antonio">
+        <style>
+            /********** CSS RESET **********/
+            html {
+                box-sizing: border-box;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                /*border: 1px solid white;*/
+                box-sizing: inherit;
+                font-family: "Antonio";
+                background-color: black;
+                color: white;
+            }
+            :root {
+              --curlvwidth: 100px;
+              --curlhheight: 15px;
+              --topheight: 170px;
+              --bottomheight: 400px;
+              --curlradius: 80px;
+              --blackarearadius:30px;
+            }
+
+            .topcurl {
+                display: grid;
+                grid-template-columns: 45% 2% 15% 5% 1fr;
+                grid-template-rows: 1fr 80px;
+                grid-row-gap: 5px;
+                grid-column-gap: 5px;
+            }
+            .bottomcurl {
+                display: grid;
+                grid-template-columns: 45% 2% 15% 5% 1fr;
+                grid-template-rows: 80px 1fr 1fr 1fr 1fr 1fr;
+                grid-row-gap: 5px;
+                grid-column-gap: 5px;
+            }
+
+            .stretch {
+                grid-column-start: 1;
+                grid-column-end: 6;
+            }
+
+            .topcurl {
+                border-radius: 0px 0px 0px var(--curlradius);
+                position: relative;
+                width: 80%;
+                height: var(--topheight);
+                background-color: black;
+                margin: auto;
+            }
+            .bottomcurl {
+                border-radius: var(--curlradius) 0px 0px 0px;
+                position: relative;
+                width: 80%;
+                height: var(--bottomheight);
+                background-color: black;
+                margin: auto;
+            }
+
+            .topblackarea {
+                border-radius: 0px 0px 0px var(--blackarearadius);
+                position: absolute;
+                top: 0px;
+                left: var(--curlvwidth);
+                height: calc(var(--topheight) - var(--curlhheight));
+                width: calc(100% - var(--curlvwidth));
+                z-index: 99;
+            }
+            .bottomblackarea {
+                border-radius: var(--blackarearadius) 0px 0px 0px;
+                position: absolute;
+                top: var(--curlhheight);
+                left: var(--curlvwidth);
+                height: calc(var(--bottomheight) - var(--curlhheight));
+                width: calc(100% - var(--curlvwidth));
+                z-index: 99;
+            }
+
+            .sidebutton {
+                color: black;
+                font-size: 13px;
+                padding: 5px 5px 5px 5px;
+            }
+
+            .test {
+                height: 99px;
+                width: 500px;
+                background-color: green;
+                line-height: 99px;
+                text-align: right;
+            }
+
+            .top_row1 { background-color: #cc99cc; }
+            .top_row2a { background-color: #9999ff; border-radius: 0px 0px 0px var(--curlradius); }
+            .top_row2b { background-color: #ff9966; }
+            .top_row2c { background-color: #cc6666; }
+            .top_row2d { background-color: #cc99cc; }
+            .top_row2e { background-color: #cc99cc; }
+            .top_row2e { background-color: #cc99cc; }
+
+            .bottom_row1a { background-color: #cc6666; border-radius: var(--curlradius) 0px 0px 0px; }
+            .bottom_row1b { background-color: #ff9966; }
+            .bottom_row1c { background-color: #9999ff; }
+            .bottom_row1d { background-color: #cc99cc; }
+            .bottom_row1e { background-color: #ff9966; }
+            .bottom_row2 { background-color: #cc6666; }
+            .bottom_row3 { background-color: #ff9900; }
+            .bottom_row4 { background-color: #ff9966; }
+            .bottom_row5 { background-color: #ff9966; }
+            .bottom_row6 { background-color: #9999ff; }
+
+
+        </style>
+    </head>
+    <body>
+
+        <div class="topcurl">
+            <div class="topblackarea">TOP</div>
+
+            <div class="top_row1 stretch sidebutton">TOP ROW 1</div>
+            <div class="top_row2a sidebutton"></div>
+            <div class="top_row2b sidebutton"></div>
+            <div class="top_row2c sidebutton"></div>
+            <div class="top_row2d sidebutton"></div>
+            <div class="top_row2e sidebutton"></div>
+
+        </div>
+        <div>SPACER</div>
+        <div class="bottomcurl">
+            <div class="bottomblackarea">BOTTOM</div>
+
+            <div class="bottom_row1a sidebutton"></div>
+            <div class="bottom_row1b sidebutton"></div>
+            <div class="bottom_row1c sidebutton"></div>
+            <div class="bottom_row1d sidebutton"></div>
+            <div class="bottom_row1e sidebutton"></div>
+            <div class="bottom_row2 stretch sidebutton">BOTTOM ROW 2</div>
+            <div class="bottom_row3 stretch sidebutton">BOTTOM ROW 3</div>
+            <div class="bottom_row4 stretch sidebutton">BOTTOM ROW 4</div>
+            <div class="bottom_row5 stretch sidebutton">BOTTOM ROW 5</div>
+            <div class="bottom_row6 stretch sidebutton">BOTTOM ROW 6</div>
+
+        </div>
+
+    </body>
+</html>
