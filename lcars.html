@@ -131,7 +131,7 @@
                 padding: 5px 5px 5px 5px;
             }
 
-            .RoundButton {
+            .roundbutton {
                 border-radius: 30px;
                 color: black;
                 vertical-align: center;
@@ -139,13 +139,13 @@
                 line-height: 50px;
                 font-size: 20px;
             }
-            .RoundButton:hover { filter: brightness(120%); }
-            .RoundButton:active { filter: brightness(82%); }
+            .pressable:hover { filter: brightness(120%); }
+            .pressable:active { filter: brightness(82%); }
 
-            .RdBtn1 { background-color: var(--Purple01); }
-            .RdBtn2 { background-color: var(--Orange01); }
-            .RdBtn3 { background-color: var(--Orange02); }
-            .RdBtn4 { background-color: var(--Pink01); }
+            #RdBtn1 { background-color: var(--Purple01); }
+            #RdBtn2 { background-color: var(--Orange01); }
+            #RdBtn3 { background-color: var(--Orange02); }
+            #RdBtn4 { background-color: var(--Pink01); }
 
             .UpperBtnA { background-color: var(--Purple01); }
             .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius); }
@@ -160,11 +160,11 @@
             .LowerDividerB { background-color: var(--Purple02); }
             .LowerDividerC { background-color: var(--Purple01); }
             .LowerDividerD { background-color: var(--Orange01); }
-            .LowerBtnA { background-color: var(--Pink01); }
-            .LowerBtnB { background-color: var(--Orange02); }
-            .LowerBtnC { background-color: var(--Orange01); }
-            .LowerBtnD { background-color: var(--Orange01); }
-            .LowerBtnE { background-color: var(--Purple02); }
+            #LowerBtnA { background-color: var(--Pink01); }
+            #LowerBtnB { background-color: var(--Orange02); }
+            #LowerBtnC { background-color: var(--Orange01); }
+            #LowerBtnD { background-color: var(--Orange01); }
+            #LowerBtnE { background-color: var(--Purple02); }
 
             #UpperContentPanel { color: var(--Purple01); padding: 15px; }
             .highlight1 { color: var(--Orange01); }
@@ -226,10 +226,10 @@
             function buttonHandler(id) {
                 let movie;
                 switch(id) {
-                    case "btna": movie=VIDZ[0]; break;
-                    case "btnb": movie=VIDZ[1]; break;
-                    case "btnc": movie=VIDZ[2]; break;
-                    case "btnd": movie=VIDZ[3]; break;
+                    case "RdBtn1": movie=VIDZ[0]; break;
+                    case "RdBtn2": movie=VIDZ[1]; break;
+                    case "RdBtn3": movie=VIDZ[2]; break;
+                    case "RdBtn4": movie=VIDZ[3]; break;
                 }
                 console.log(player);
                 player.loadVideoById(movie, 0, "large");
@@ -279,10 +279,10 @@
                     <!-- CONTENT GOES HERE ------------------------------------------->
                 </div>
                 <div class="UpperButtonPanel">
-                    <div class="RoundButton RdBtn1" id="btna" onclick="buttonHandler(this.id);">SW-52577</div>
-                    <div class="RoundButton RdBtn2" id="btnb" onclick="buttonHandler(this.id);">85-BTTF</div>
-                    <div class="RoundButton RdBtn3" id="btnc" onclick="buttonHandler(this.id);">CS-MDL101</div>
-                    <div class="RoundButton RdBtn4" id="btnd" onclick="buttonHandler(this.id);">WARP CORE</div>
+                    <div id="RdBtn1" class="roundbutton pressable" onclick="buttonHandler(this.id);">SW-52577</div>
+                    <div id="RdBtn2" class="roundbutton pressable" onclick="buttonHandler(this.id);">85-BTTF</div>
+                    <div id="RdBtn3" class="roundbutton pressable" onclick="buttonHandler(this.id);">CS-MDL101</div>
+                    <div id="RdBtn4" class="roundbutton pressable" onclick="buttonHandler(this.id);">WARP CORE</div>
                 </div>
             </div>
 
@@ -296,10 +296,8 @@
         </div>
         <div class="LcarsLowerArea">
             <div id="BlackLowerArea" class="BlackLowerArea">
+                <!-- CONTENT GOES HERE ------------------------------------------->
                 <div id='player' ></div>
-            <!-- CONTENT GOES HERE ------------------------------------------->
-
-
 
             </div>
 
@@ -308,11 +306,11 @@
             <div class="LowerDividerB"></div>
             <div class="LowerDividerC"></div>
             <div class="LowerDividerD"></div>
-            <div class="LowerBtnA sidebutton"><div class="sidebuttonText">A-80537</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnB sidebutton"><div class="sidebuttonText">B-54985</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnC sidebutton"><div class="sidebuttonText">C-69082</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnD sidebutton"><div class="sidebuttonText">D-00442</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnE sidebutton"><div class="sidebuttonText">E-69911</div></div>          <div class="stretch"></div>
+            <div id="LowerBtnA" class="sidebutton pressable"><div class="sidebuttonText">A-80537</div></div><div class="stretch"></div>
+            <div id="LowerBtnB" class="sidebutton pressable"><div class="sidebuttonText">B-54985</div></div><div class="stretch"></div>
+            <div id="LowerBtnC" class="sidebutton pressable"><div class="sidebuttonText">C-69082</div></div><div class="stretch"></div>
+            <div id="LowerBtnD" class="sidebutton pressable"><div class="sidebuttonText">D-00442</div></div><div class="stretch"></div>
+            <div id="LowerBtnE" class="sidebutton pressable"><div class="sidebuttonText">E-69911</div></div><div class="stretch"></div>
 
         </div>
 
