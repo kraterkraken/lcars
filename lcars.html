@@ -22,13 +22,20 @@
 
             /********** VARIABLES **********/
             :root {
-              --SideButtonWidth: 100px;
               --HorizDividerHeight: 15px;
               --LcarsUpperHeight: 170px;
               --LcarsLowerHeight: 400px;
               --CurlRadius: 80px;
               --CurlHeight: 80px;
               --BlackBoxRadius:30px;
+
+              --SideButtonWidth: 100px;
+              --CurlDividerWidth: 347px;
+              --DividerPipWidthA: 18px;
+              --DividerPipWidthB: 135px;
+              --DividerPipWidthC: 45px;
+              --DividerPipWidthD: 235px;
+
 
               --Purple01: #cc99cc;
               --Purple02: #9999ff;
@@ -60,6 +67,17 @@
             .LowerCurl, .UpperCurl {
                 grid-column-start: 1;
                 grid-column-end: 3;
+            }
+            .BlackUpperArea {
+                display: grid;
+                grid-template-columns: 1fr 280px;;
+            }
+            .UpperButtonPanel {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-row-gap: 15px;
+                grid-column-gap: 15px;
+                padding: 15px 15px 15px 15px;
             }
 
             /*********** STYLING **********/
@@ -113,6 +131,22 @@
                 padding: 5px 5px 5px 5px;
             }
 
+            .RoundButton {
+                border-radius: 30px;
+                color: black;
+                vertical-align: center;
+                height: 50px;
+                line-height: 50px;
+                font-size: 20px;
+            }
+            .RoundButton:hover { filter: brightness(120%); }
+            .RoundButton:active { filter: brightness(82%); }
+
+            .RdBtn1 { background-color: var(--Purple01); }
+            .RdBtn2 { background-color: var(--Orange01); }
+            .RdBtn3 { background-color: var(--Orange02); }
+            .RdBtn4 { background-color: var(--Pink01); }
+
             .UpperBtnA { background-color: var(--Purple01); }
             .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius); }
             .UpperDividerA { background-color: var(--Orange01); }
@@ -132,13 +166,125 @@
             .LowerBtnD { background-color: var(--Orange01); }
             .LowerBtnE { background-color: var(--Purple02); }
 
+            #UpperContentPanel { color: var(--Purple01); padding: 15px; }
+            .highlight1 { color: var(--Orange01); }
+            .highlight2 { color: var(--Purple02); }
+
 
         </style>
+        <script>
+            /*jshint esversion: 6 */
+            "use strict";
+            const VIDZ = [
+                "r3MLQhWCgN0", // starwars
+                "FWG3Dfss3Jc", // bttf
+                "xcPeTeTBqHE", // terminator
+                "bMEsNcADyrY"  // sttng
+            ];
+
+            ////////////////////////////////////////////////////////////////////
+            // VIDEO PLAYER STUFF
+            ////////////////////////////////////////////////////////////////////
+            // BEGIN : CODE COPY-AND-PASTED from GOOGLE.COM
+            ////////////////////////////////////////////////////////////////////
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            var player;
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player
+                (
+                    'player',
+                    {
+                        height: '390',
+                        width: '640',
+                        playerVars: { 'playsinline': 1 },
+                        events: { 'onReady': onPlayerReady,'onStateChange': onPlayerStateChange }
+                    }
+                );
+            }
+            function onPlayerReady(event) {
+                //event.target.playVideo();
+            }
+            var done = false;
+            function onPlayerStateChange(event) {
+                // if (event.data == YT.PlayerState.PLAYING && !done) {
+                //   setTimeout(stopVideo, 6000);
+                //   done = true;
+                // }
+            }
+            function stopVideo() {
+                player.stopVideo();
+            }
+            ////////////////////////////////////////////////////////////////////
+            // END  : CODE COPY-AND-PASTED from GOOGLE.COM
+            ////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////
+
+            function buttonHandler(id) {
+                let movie;
+                switch(id) {
+                    case "btna": movie=VIDZ[0]; break;
+                    case "btnb": movie=VIDZ[1]; break;
+                    case "btnc": movie=VIDZ[2]; break;
+                    case "btnd": movie=VIDZ[3]; break;
+                }
+                console.log(player);
+                player.loadVideoById(movie, 0, "large");
+            }
+            function rand5() {
+                return Math.round(89999 * Math.random() + 10000);
+            }
+            function scrollNumbers() {
+                // generate 8 random 5-digit numbers and concatenate them
+                // to the current list of numbers
+                let str = document.getElementById("UpperContentPanel").innerHTML;
+                for (let i=0; i<8; i++) {
+                    let span = "";
+                    let spanEnd = "";
+                    // make a number a different color a small % of the time
+                    if (Math.random() < 0.03) {
+                        span = "<span class='highlight1'>";
+                        spanEnd = "</span>";
+                    }
+                    else if (Math.random() < 0.03) {
+                        span = "<span class='highlight2'>";
+                        spanEnd = "</span>";
+                    }
+                    str += span + rand5() + spanEnd + " ";
+                }
+                let arr = str.split("<br>");
+                // if we've got more than 5 rows of numbers, eliminate the top one
+                if (arr.length > 5) {
+                    arr.shift();
+                    str = arr.join("<br>");
+                }
+                str += "<br>";
+
+                // display the list of numbers
+                document.getElementById("UpperContentPanel").innerHTML = str;
+            }
+
+            setInterval( scrollNumbers, 1000);
+
+        </script>
     </head>
     <body>
 
         <div class="LcarsUpperArea">
-            <div class="BlackUpperArea">UPPER</div>
+            <div class="BlackUpperArea">
+                <div id="UpperContentPanel">
+                    <!-- CONTENT GOES HERE ------------------------------------------->
+                </div>
+                <div class="UpperButtonPanel">
+                    <div class="RoundButton RdBtn1" id="btna" onclick="buttonHandler(this.id);">SW-52577</div>
+                    <div class="RoundButton RdBtn2" id="btnb" onclick="buttonHandler(this.id);">85-BTTF</div>
+                    <div class="RoundButton RdBtn3" id="btnc" onclick="buttonHandler(this.id);">CS-MDL101</div>
+                    <div class="RoundButton RdBtn4" id="btnd" onclick="buttonHandler(this.id);">WARP CORE</div>
+                </div>
+            </div>
 
             <div class="UpperBtnA sidebutton"><div class="sidebuttonText">UPPER BTN 1</div></div>          <div class="stretch"></div>
             <div class="UpperCurl "></div>
@@ -149,18 +295,24 @@
 
         </div>
         <div class="LcarsLowerArea">
-            <div class="BlackLowerArea">LOWER</div>
+            <div id="BlackLowerArea" class="BlackLowerArea">
+                <div id='player' ></div>
+            <!-- CONTENT GOES HERE ------------------------------------------->
+
+
+
+            </div>
 
             <div class="LowerCurl "></div>
             <div class="LowerDividerA"></div>
             <div class="LowerDividerB"></div>
             <div class="LowerDividerC"></div>
             <div class="LowerDividerD"></div>
-            <div class="LowerBtnA sidebutton"><div class="sidebuttonText">LOWER BTN A</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnB sidebutton"><div class="sidebuttonText">LOWER BTN B</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnC sidebutton"><div class="sidebuttonText">LOWER BTN C</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnD sidebutton"><div class="sidebuttonText">LOWER BTN D</div></div>          <div class="stretch"></div>
-            <div class="LowerBtnE sidebutton"><div class="sidebuttonText">LOWER BTN E</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnA sidebutton"><div class="sidebuttonText">A-80537</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnB sidebutton"><div class="sidebuttonText">B-54985</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnC sidebutton"><div class="sidebuttonText">C-69082</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnD sidebutton"><div class="sidebuttonText">D-00442</div></div>          <div class="stretch"></div>
+            <div class="LowerBtnE sidebutton"><div class="sidebuttonText">E-69911</div></div>          <div class="stretch"></div>
 
         </div>
 
