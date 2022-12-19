@@ -38,6 +38,7 @@
 
 
               --Purple01: #cc99cc;
+              --BrightPurple01: #f5b8f5;
               --Purple02: #9999ff;
               --Orange01: #ff9966;
               --Orange02: #ff9900;
@@ -166,9 +167,90 @@
             #LowerBtnD { background-color: var(--Orange01); }
             #LowerBtnE { background-color: var(--Purple02); }
 
-            #NumberScroller { color: var(--Purple01); padding: 15px; }
+            #NumberScroller { color: var(--Purple01); padding: 15px; display: none;}
             #NumberScroller .highlight1 { color: var(--Orange01); }
             #NumberScroller .highlight2 { color: var(--Purple02); }
+
+
+            @keyframes WarpCoreLeftArrow {
+                from { top: 0px; color: var(--Pink01); }
+                to { top: 35px; color: white; }
+            }
+            @keyframes WarpCoreRightArrow {
+                from { top: 25px; color: var(--BrightPurple01); }
+                to { top: 55px; color: var(--Pink01); }
+            }
+
+            #WarpCore {
+                display: grid;
+                grid-template-columns: 30px 25px 1fr 25px 30px;
+                height: 120px;
+                margin: 20px;
+                position: relative;
+            }
+            #WarpCore .LeftRuleMarks {
+                margin-top: auto;
+                margin-bottom: auto;
+                font-size: 13px;
+                text-align: right;
+                color: var(--Purple02);
+            }
+            #WarpCore .dashes {
+                color: var(--Orange02);
+            }
+            #WarpCore .LeftBracket {
+                background-color: var(--Orange02);
+                border-radius: 15px 0px 0px 15px;
+                position: relative;
+            }
+            #WarpCore .LeftOccluder {
+                background-color: black;
+                border-radius: 15px 0px 0px 15px;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                height: 100px;
+                width: 20px;
+            }
+            #WarpCore .LeftArrow {
+                position: relative;
+                top: 0px;
+                color: white;
+                animation-name: WarpCoreLeftArrow;
+                animation-duration: 4s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            #WarpCore .RightArrow {
+                position: relative;
+                top: 25px;
+                color: var(--Purple01);
+                animation-name: WarpCoreRightArrow;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            #WarpCore .RightOccluder {
+                background-color: black;
+                color: white;
+                border-radius: 0px 15px 15px 0px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                height: 100px;
+                width: 20px;
+            }
+            #WarpCore .RightBracket {
+                background-color: var(--Orange02);
+                border-radius: 0px 15px 15px 0px;
+                position: relative;
+            }
+            #WarpCore .RightRuleMarks {
+                margin-top: auto;
+                margin-bottom: auto;
+                font-size: 13px;
+                color: var(--Purple02);
+            }
 
 
         </style>
@@ -279,6 +361,35 @@
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
                     <div id="NumberScroller"></div>
+                    <div id="WarpCore">
+                        <div class="LeftRuleMarks">
+                            100 <span class="dashes">-</span><br>
+                            080 <span class="dashes">-</span><br>
+                            060 <span class="dashes">-</span><br>
+                            040 <span class="dashes">-</span><br>
+                            020 <span class="dashes">-</span><br>
+                            000 <span class="dashes">-</span><br>
+                        </div>
+                        <div class="LeftBracket">
+                            <div class="LeftOccluder">
+                                <div class="LeftArrow">&#9665;</div>
+                            </div>
+                        </div>
+                        <div class="Contents"></div>
+                        <div class="RightBracket">
+                            <div class="RightOccluder">
+                                <div class="RightArrow">&#9654;</div>
+                            </div>
+                        </div>
+                        <div class="RightRuleMarks">
+                            <span class="dashes">-</span> 0.05<br>
+                            <span class="dashes">-</span> 0.10<br>
+                            <span class="dashes">-</span> 0.15<br>
+                            <span class="dashes">-</span> 0.20<br>
+                            <span class="dashes">-</span> 0.25<br>
+                            <span class="dashes">-</span> 0.30<br>
+                        </div>
+                    </div>
                 </div>
                 <div class="UpperButtonPanel">
                     <button id="RdBtn1" class="roundbutton pressable" onclick="buttonHandler(this.id);">SW-52577</button>
