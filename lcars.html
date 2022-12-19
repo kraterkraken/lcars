@@ -180,6 +180,14 @@
                 from { top: 25px; color: var(--BrightPurple01); }
                 to { top: 55px; color: var(--Pink01); }
             }
+            @keyframes WarpCoreIllumination {
+                from { background-color: #14b57f; }
+                to { background-color: #6afccb; }
+            }
+            @keyframes WarpCoreContainment {
+                from { background-color: #63b1ff; }
+                to { background-color: #99ccff; }
+            }
 
             #WarpCore {
                 display: grid;
@@ -218,6 +226,32 @@
                 color: white;
                 animation-name: WarpCoreLeftArrow;
                 animation-duration: 4s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            #WarpCore .Contents {
+                position: relative;
+                margin: auto;
+            }
+            #WarpCore .OuterCore {
+                border-radius: 50%;
+                padding: 25px;
+                background-color:#63b1ff; /*#99ccff;*/
+                height: 100%;
+                width: 100%;
+                animation-name: WarpCoreContainment;
+                animation-duration: 0.3s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            #WarpCore .InnerCore {
+                border-radius: 50%;
+                border: 10px solid black;
+                background-color: #14b57f;
+                height: 70px;
+                width: 70px;
+                animation-name: WarpCoreIllumination;
+                animation-duration: 1s;
                 animation-iteration-count: infinite;
                 animation-direction: alternate;
             }
@@ -375,7 +409,11 @@
                                 <div class="LeftArrow">&#9665;</div>
                             </div>
                         </div>
-                        <div class="Contents"></div>
+                        <div class="Contents">
+                            <div class="OuterCore">
+                                <div class="InnerCore"></div>
+                            </div>
+                        </div>
                         <div class="RightBracket">
                             <div class="RightOccluder">
                                 <div class="RightArrow">&#9654;</div>
