@@ -339,6 +339,22 @@
             ////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////
 
+            function changeUpperDisplay() {
+                let label = document.getElementById("UpperBtnA_Label");
+                switch(label.innerHTML) {
+                    case "SYS STATUS":
+                        document.getElementById("NumberScroller").style.display = "block";
+                        document.getElementById("WarpCore").style.display = "none";
+                        label.innerHTML = "WARP CORE";
+                        break;
+                    case "WARP CORE":
+                        document.getElementById("NumberScroller").style.display = "none";
+                        document.getElementById("WarpCore").style.display = "";
+                        label.innerHTML = "SYS STATUS";
+                        break;
+                }
+            }
+
             function buttonHandler(id) {
                 let movie;
                 switch(id) {
@@ -346,8 +362,8 @@
                     case "RdBtn2": movie=VIDZ[1]; break;
                     case "RdBtn3": movie=VIDZ[2]; break;
                     case "RdBtn4": movie=VIDZ[3]; break;
+                    case "UpperBtnA": changeUpperDisplay(); break;
                 }
-                console.log(player);
                 player.loadVideoById(movie, 0, "large");
             }
             function rand5() {
@@ -394,8 +410,8 @@
             <div class="BlackUpperArea">
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
-                    <div id="NumberScroller"></div>
-                    <div id="WarpCore">
+                    <div id="NumberScroller" style="display:none;"></div>
+                    <div id="WarpCore" >
                         <div class="LeftRuleMarks">
                             100 <span class="dashes">-</span><br>
                             080 <span class="dashes">-</span><br>
@@ -437,7 +453,10 @@
                 </div>
             </div>
 
-            <button id="UpperBtnA" class="sidebutton pressable"><div class="sidebuttonText">SYS STATUS</div></button><div class="stretch"></div>
+            <button id="UpperBtnA" class="sidebutton pressable"onclick="buttonHandler(this.id);">
+                <div id="UpperBtnA_Label" class="sidebuttonText">SYS STATUS</div>
+            </button>
+            <div class="stretch"></div>
             <div class="UpperCurl "></div>
             <div class="UpperDividerA"></div>
             <div class="UpperDividerB"></div>
