@@ -23,7 +23,7 @@
             /********** VARIABLES **********/
             :root {
               --HorizDividerHeight: 15px;
-              --LcarsUpperHeight: 170px;
+              --LcarsUpperHeight: 220px;
               --LcarsLowerHeight: 400px;
               --CurlRadius: 80px;
               --CurlHeight: 80px;
@@ -73,6 +73,10 @@
                 display: grid;
                 grid-template-columns: 1fr 280px;;
             }
+            .TitleBlock {
+                grid-column-start: 1;
+                grid-column-end: 3;
+            }
             .UpperButtonPanel {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -107,6 +111,12 @@
                 width: calc(100% - var(--SideButtonWidth));
                 left: var(--SideButtonWidth);
                 text-align: center;
+            }
+            .TitleBlock {
+                color: var(--Orange02);
+                font-size: 40px;
+                text-align: right;
+                padding-right: 25px;
             }
             .BlackUpperArea {
                 border-radius: 0px 0px 0px var(--BlackBoxRadius);
@@ -409,6 +419,7 @@
 
         <div class="LcarsUpperArea">
             <div class="BlackUpperArea">
+                <div class="TitleBlock">LCARS ACCESS 24</div>
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
                     <div id="NumberScroller" style="display:none;"></div>
@@ -447,10 +458,14 @@
                     </div>
                 </div>
                 <div class="UpperButtonPanel">
-                    <button id="RdBtn1" class="roundbutton pressable" onclick="buttonHandler(this.id);">SW-52577</button>
-                    <button id="RdBtn2" class="roundbutton pressable" onclick="buttonHandler(this.id);">85-BTTF</button>
-                    <button id="RdBtn3" class="roundbutton pressable" onclick="buttonHandler(this.id);">CS-MDL101</button>
-                    <button id="RdBtn4" class="roundbutton pressable" onclick="buttonHandler(this.id);">WARP CORE</button>
+                    <button id="RdBtn1" class="roundbutton pressable"
+                        onclick="buttonHandler(this.id);">SW-52577</button>
+                    <button id="RdBtn2" class="roundbutton pressable"
+                        onclick="buttonHandler(this.id);">85-BTTF</button>
+                    <button id="RdBtn3" class="roundbutton pressable"
+                        onclick="buttonHandler(this.id);">CS-MDL101</button>
+                    <button id="RdBtn4" class="roundbutton pressable"
+                        onclick="buttonHandler(this.id);">DOMJOT-992</button>
                 </div>
             </div>
 
@@ -477,11 +492,16 @@
             <div class="LowerDividerB"></div>
             <div class="LowerDividerC"></div>
             <div class="LowerDividerD"></div>
-            <button id="LowerBtnA" class="sidebutton pressable"><div class="sidebuttonText">A-80537</div></button><div class="stretch"></div>
-            <button id="LowerBtnB" class="sidebutton pressable"><div class="sidebuttonText">B-54985</div></button><div class="stretch"></div>
-            <button id="LowerBtnC" class="sidebutton pressable"><div class="sidebuttonText">C-69082</div></button><div class="stretch"></div>
-            <button id="LowerBtnD" class="sidebutton pressable"><div class="sidebuttonText">D-00442</div></button><div class="stretch"></div>
-            <button id="LowerBtnE" class="sidebutton pressable"><div class="sidebuttonText">E-69911</div></button><div class="stretch"></div>
+            <button id="LowerBtnA" class="sidebutton pressable">
+                <div class="sidebuttonText">A-80537</div></button><div class="stretch"></div>
+            <button id="LowerBtnB" class="sidebutton pressable">
+                <div class="sidebuttonText">B-54985</div></button><div class="stretch"></div>
+            <button id="LowerBtnC" class="sidebutton pressable">
+                <div class="sidebuttonText">C-69082</div></button><div class="stretch"></div>
+            <button id="LowerBtnD" class="sidebutton pressable">
+                <div class="sidebuttonText">D-00442</div></button><div class="stretch"></div>
+            <button id="LowerBtnE" class="sidebutton pressable">
+                <div class="sidebuttonText">E-69911</div></button><div class="stretch"></div>
 
         </div>
 
