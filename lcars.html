@@ -167,10 +167,11 @@
             #LowerBtnD { background-color: var(--Orange01); }
             #LowerBtnE { background-color: var(--Purple02); }
 
+            .UpperContentPanel { margin: auto;}
+
             #NumberScroller { color: var(--Purple01); padding: 15px; display: none;}
             #NumberScroller .highlight1 { color: var(--Orange01); }
             #NumberScroller .highlight2 { color: var(--Purple02); }
-
 
             @keyframes WarpCoreLeftArrow {
                 from { top: 0px; color: var(--Pink01); }
@@ -191,7 +192,7 @@
 
             #WarpCore {
                 display: grid;
-                grid-template-columns: 30px 25px 1fr 25px 30px;
+                grid-template-columns: 30px 25px 160px 25px 30px;
                 height: 120px;
                 margin: 20px;
                 position: relative;
@@ -411,7 +412,7 @@
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
                     <div id="NumberScroller" style="display:none;"></div>
-                    <div id="WarpCore" >
+                    <div id="WarpCore"  style="display:none;">
                         <div class="LeftRuleMarks">
                             100 <span class="dashes">-</span><br>
                             080 <span class="dashes">-</span><br>
