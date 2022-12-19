@@ -147,7 +147,7 @@
             #RdBtn3 { background-color: var(--Orange02); }
             #RdBtn4 { background-color: var(--Pink01); }
 
-            .UpperBtnA { background-color: var(--Purple01); }
+            #UpperBtnA { background-color: var(--Purple01); }
             .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius); }
             .UpperDividerA { background-color: var(--Orange01); }
             .UpperDividerB { background-color: var(--Pink01); }
@@ -166,9 +166,9 @@
             #LowerBtnD { background-color: var(--Orange01); }
             #LowerBtnE { background-color: var(--Purple02); }
 
-            #UpperContentPanel { color: var(--Purple01); padding: 15px; }
-            .highlight1 { color: var(--Orange01); }
-            .highlight2 { color: var(--Purple02); }
+            #NumberScroller { color: var(--Purple01); padding: 15px; }
+            #NumberScroller .highlight1 { color: var(--Orange01); }
+            #NumberScroller .highlight2 { color: var(--Purple02); }
 
 
         </style>
@@ -240,7 +240,8 @@
             function scrollNumbers() {
                 // generate 8 random 5-digit numbers and concatenate them
                 // to the current list of numbers
-                let str = document.getElementById("UpperContentPanel").innerHTML;
+                let scroller = document.getElementById("NumberScroller");
+                let str = scroller.innerHTML;
                 for (let i=0; i<8; i++) {
                     let span = "";
                     let spanEnd = "";
@@ -264,7 +265,7 @@
                 str += "<br>";
 
                 // display the list of numbers
-                document.getElementById("UpperContentPanel").innerHTML = str;
+                scroller.innerHTML = str;
             }
 
             setInterval( scrollNumbers, 1000);
@@ -275,18 +276,19 @@
 
         <div class="LcarsUpperArea">
             <div class="BlackUpperArea">
-                <div id="UpperContentPanel">
+                <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
+                    <div id="NumberScroller"></div>
                 </div>
                 <div class="UpperButtonPanel">
-                    <div id="RdBtn1" class="roundbutton pressable" onclick="buttonHandler(this.id);">SW-52577</div>
-                    <div id="RdBtn2" class="roundbutton pressable" onclick="buttonHandler(this.id);">85-BTTF</div>
-                    <div id="RdBtn3" class="roundbutton pressable" onclick="buttonHandler(this.id);">CS-MDL101</div>
-                    <div id="RdBtn4" class="roundbutton pressable" onclick="buttonHandler(this.id);">WARP CORE</div>
+                    <button id="RdBtn1" class="roundbutton pressable" onclick="buttonHandler(this.id);">SW-52577</button>
+                    <button id="RdBtn2" class="roundbutton pressable" onclick="buttonHandler(this.id);">85-BTTF</button>
+                    <button id="RdBtn3" class="roundbutton pressable" onclick="buttonHandler(this.id);">CS-MDL101</button>
+                    <button id="RdBtn4" class="roundbutton pressable" onclick="buttonHandler(this.id);">WARP CORE</button>
                 </div>
             </div>
 
-            <div class="UpperBtnA sidebutton"><div class="sidebuttonText">UPPER BTN 1</div></div>          <div class="stretch"></div>
+            <button id="UpperBtnA" class="sidebutton pressable"><div class="sidebuttonText">SYS STATUS</div></button><div class="stretch"></div>
             <div class="UpperCurl "></div>
             <div class="UpperDividerA"></div>
             <div class="UpperDividerB"></div>
@@ -306,11 +308,11 @@
             <div class="LowerDividerB"></div>
             <div class="LowerDividerC"></div>
             <div class="LowerDividerD"></div>
-            <div id="LowerBtnA" class="sidebutton pressable"><div class="sidebuttonText">A-80537</div></div><div class="stretch"></div>
-            <div id="LowerBtnB" class="sidebutton pressable"><div class="sidebuttonText">B-54985</div></div><div class="stretch"></div>
-            <div id="LowerBtnC" class="sidebutton pressable"><div class="sidebuttonText">C-69082</div></div><div class="stretch"></div>
-            <div id="LowerBtnD" class="sidebutton pressable"><div class="sidebuttonText">D-00442</div></div><div class="stretch"></div>
-            <div id="LowerBtnE" class="sidebutton pressable"><div class="sidebuttonText">E-69911</div></div><div class="stretch"></div>
+            <button id="LowerBtnA" class="sidebutton pressable"><div class="sidebuttonText">A-80537</div></button><div class="stretch"></div>
+            <button id="LowerBtnB" class="sidebutton pressable"><div class="sidebuttonText">B-54985</div></button><div class="stretch"></div>
+            <button id="LowerBtnC" class="sidebutton pressable"><div class="sidebuttonText">C-69082</div></button><div class="stretch"></div>
+            <button id="LowerBtnD" class="sidebutton pressable"><div class="sidebuttonText">D-00442</div></button><div class="stretch"></div>
+            <button id="LowerBtnE" class="sidebutton pressable"><div class="sidebuttonText">E-69911</div></button><div class="stretch"></div>
 
         </div>
 
