@@ -29,6 +29,7 @@
               --CurlHeight: 80px;
               --BlackBoxRadius:30px;
 
+              --TotalWidth: 880px;
               --SideButtonWidth: 100px;
               --CurlDividerWidth: 347px;
               --DividerPipWidthA: 18px;
@@ -71,14 +72,18 @@
             }
             .BlackUpperArea {
                 display: grid;
-                grid-template-columns: 1fr 280px;;
+                grid-template-columns: 1fr 280px;
+            }
+            .UpperContentPanel {
+                grid-row-start: 1;
+                grid-row-end: 3;
             }
             .UpperButtonPanel {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                grid-row-gap: 15px;
-                grid-column-gap: 15px;
-                padding: 15px 15px 15px 15px;
+                grid-row-gap: 5px;
+                grid-column-gap: 10px;
+                padding: 15px 0px 15px 0px;
             }
 
             /*********** STYLING **********/
@@ -414,7 +419,6 @@
 
         <div class="LcarsUpperArea">
             <div class="BlackUpperArea">
-                <div></div>
                 <div class="TitleBlock">LCARS ACCESS 24</div>
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
