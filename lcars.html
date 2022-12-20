@@ -162,7 +162,17 @@
             #RdBtn4 { background-color: var(--Pink01); }
 
             #UpperBtnA { background-color: var(--Purple01); }
-            .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius); }
+            .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius);
+                position: relative;
+            }
+            #UpperCurlText { color: black; text-align: right;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 100px;
+                text-align: right;
+                padding: 5px 5px 5px 5px;
+                }
             .UpperDividerA { background-color: var(--Orange01); }
             .UpperDividerB { background-color: var(--Pink01); }
             .UpperDividerC { background-color: var(--Purple01); }
@@ -354,17 +364,24 @@
             ////////////////////////////////////////////////////////////////////
 
             function changeUpperDisplay() {
-                let label = document.getElementById("UpperBtnA_Label");
+                let label = document.getElementById("UpperCurlText");
+                let warpCore = document.getElementById("WarpCore");
+                let numberScroller = document.getElementById("NumberScroller");
                 switch(label.innerHTML) {
-                    case "SYS STATUS":
-                        document.getElementById("NumberScroller").style.display = "block";
-                        document.getElementById("WarpCore").style.display = "none";
+                    case "":
+                        numberScroller.style.display = "block";
+                        warpCore.style.display = "none";
+                        label.innerHTML = "DATA NODE T7";
+                        break;
+                    case "DATA NODE T7":
+                        numberScroller.style.display = "none";
+                        warpCore.style.display = "";
                         label.innerHTML = "WARP CORE";
                         break;
                     case "WARP CORE":
-                        document.getElementById("NumberScroller").style.display = "none";
-                        document.getElementById("WarpCore").style.display = "";
-                        label.innerHTML = "SYS STATUS";
+                        numberScroller.style.display = "none";
+                        warpCore.style.display = "none";
+                        label.innerHTML = "";
                         break;
                 }
             }
@@ -476,7 +493,7 @@
                 <div id="UpperBtnA_Label" class="sidebuttonText">SYS STATUS</div>
             </button>
             <div class="stretch"></div>
-            <div class="UpperCurl "></div>
+            <div class="UpperCurl"><div id="UpperCurlText"></div></div>
             <div class="UpperDividerA"></div>
             <div class="UpperDividerB"></div>
             <div class="UpperDividerC"></div>
