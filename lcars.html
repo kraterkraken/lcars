@@ -163,6 +163,11 @@
                 height: var(--ButtonPanelHeight);
             }
             .TitleBlock {
+                position: relative;
+            }
+            .TitleBlockText {
+                position: absolute;
+                bottom: 0px;
                 color: var(--Orange02);
                 font-size: calc(0.6 * var(--TitleBlockHeight));
                 text-align: center;
@@ -477,7 +482,7 @@
 
         <div class="LcarsUpperArea">
             <div class="BlackUpperArea">
-                <div class="TitleBlock">LCARS ACCESS 24</div>
+                <div class="TitleBlock"><div class="TitleBlockText">LCARS ACCESS 24</div></div>
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
                     <div id="NumberScroller" style="display:none;"></div>
@@ -547,7 +552,7 @@
 
             <div class="LowerCurl "></div>
             <div class="LowerDividerA"></div>
-            <div class="LowerDividerB"></div><div></div>
+            <div class="LowerDividerB"></div>
             <div class="LowerDividerC"></div>
             <div class="LowerDividerD"></div>
             <button id="LowerBtnA" class="sidebutton pressable">
