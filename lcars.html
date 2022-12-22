@@ -134,8 +134,8 @@
                 border-radius: 0px 0px 0px var(--BlackBoxRadius);
                 top: 0px;
                 height: var(--BlackUpperAreaHeight);
-                padding-top: 10px;
-                padding-bottom: 10px;
+                padding-top: var(--StandardPad);
+                padding-bottom: var(--StandardPad);
             }
             .BlackLowerArea {
                 border-radius: var(--BlackBoxRadius) 0px 0px 0px;
@@ -186,8 +186,7 @@
                 vertical-align: center;
                 height: var(--RoundButtonHeight);
                 line-height: var(--RoundButtonHeight);
-
-                font-size: calc(0.35 * var(--RoundButtonHeight));
+                font-size: calc(0.36 * var(--RoundButtonHeight));
             }
             .pressable:hover { filter: brightness(120%); }
             .pressable:active { filter: brightness(82%); }
