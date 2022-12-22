@@ -46,6 +46,10 @@
               --Orange01: #ff9966;
               --Orange02: #ff9900;
               --Pink01: #cc6666;
+              --Blue01: #14b57f;
+              --BrightBlue01: #6afccb;
+              --Green01: #63b1ff;
+              --BrightGreen01: #99ccff;
 
             }
 
@@ -222,17 +226,21 @@
                 to { top: 55px; color: var(--Pink01); }
             }
             @keyframes WarpCoreIllumination {
-                from { background-color: #14b57f; }
-                to { background-color: #6afccb; }
+                from { background-color: var(--Blue01); }
+                to { background-color: var(--BrightBlue01); }
             }
             @keyframes WarpCoreContainment {
-                from { background-color: #63b1ff; }
-                to { background-color: #99ccff; }
+                from { background-color: var(--Green01); }
+                to { background-color: var(--BrightGreen01); }
             }
 
             #WarpCore {
                 display: grid;
                 grid-template-columns: 30px 25px 160px 25px 30px;
+                /*
+                    columns are:
+                    L ruler, L bracket, contents, R bracket, R ruler
+                */
                 height: 120px;
                 margin: 20px;
                 position: relative;
@@ -277,7 +285,7 @@
             #WarpCore .OuterCore {
                 border-radius: 50%;
                 padding: 25px;
-                background-color:#63b1ff; /*#99ccff;*/
+                background-color: var(--Green01)
                 height: 100%;
                 width: 100%;
                 animation-name: WarpCoreContainment;
@@ -288,7 +296,7 @@
             #WarpCore .InnerCore {
                 border-radius: 50%;
                 border: 10px solid black;
-                background-color: #14b57f;
+                background-color: var(--Blue01);
                 height: 70px;
                 width: 70px;
                 animation-name: WarpCoreIllumination;
