@@ -5,9 +5,9 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Antonio">
         <style>
 
-        /*****************************************************************
-        ***** CSS RESET
-        ******************************************************************/
+            /*****************************************************************
+            ***** CSS RESET
+            ******************************************************************/
             html {
                 box-sizing: border-box;
                 background-color: black;
@@ -32,15 +32,13 @@
               --CurlRadius: 80px;
               --CurlHeight: 80px;
               --BlackBoxRadius:30px;
+              --UpperLowerSeparation: 10px;
+              --RoundButtonHeight: 50px;
 
-              --TotalWidth: 880px;
+              --GridGap: 5px;
+
+              --ButtonPanelWidth: 280px;
               --SideButtonWidth: 100px;
-              --CurlDividerWidth: 347px;
-              --DividerPipWidthA: 18px;
-              --DividerPipWidthB: 135px;
-              --DividerPipWidthC: 45px;
-              --DividerPipWidthD: 235px;
-
 
               --Purple01: #cc99cc;
               --BrightPurple01: #f5b8f5;
@@ -58,15 +56,15 @@
                 display: grid;
                 grid-template-columns: var(--SideButtonWidth) 38% 2% 15% 5% 1fr;
                 grid-template-rows: 1fr var(--CurlHeight);
-                grid-row-gap: 5px;
-                grid-column-gap: 5px;
+                grid-row-gap: var(--GridGap);
+                grid-column-gap:  var(--GridGap);
             }
             .LcarsLowerArea {
                 display: grid;
                 grid-template-columns: var(--SideButtonWidth) 38% 2% 15% 5% 1fr;
                 grid-template-rows: var(--CurlHeight) 1fr 1fr 1fr 1fr 1fr;
-                grid-row-gap: 5px;
-                grid-column-gap: 5px;
+                grid-row-gap: var(--GridGap);
+                grid-column-gap: var(--GridGap);
             }
             .stretch {
                 grid-column-start: 2;
@@ -78,7 +76,7 @@
             }
             .BlackUpperArea {
                 display: grid;
-                grid-template-columns: 1fr 280px;
+                grid-template-columns: 1fr var(--ButtonPanelWidth);
             }
             .UpperContentPanel {
                 grid-row-start: 1;
@@ -87,9 +85,9 @@
             .UpperButtonPanel {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                grid-row-gap: 5px;
-                grid-column-gap: 10px;
-                padding: 15px 0px 15px 0px;
+                grid-row-gap: var(--GridGap);
+                grid-column-gap: calc(2 * var(--GridGap));
+                padding: 0px 0px 15px 0px;
             }
 
             /*****************************************************************
@@ -105,7 +103,7 @@
                 height: var(--LcarsUpperHeight);
                 background-color: black;
                 margin: auto;
-                margin-bottom: 10px;
+                margin-bottom: var(--UpperLowerSeparation);
             }
             .LcarsLowerArea {
                 border-radius: var(--CurlRadius) 0px 0px 0px;
@@ -145,7 +143,7 @@
                 position: absolute;
                 top: 0px;
                 left: 0px;
-                width: 100px;
+                width: var(--SideButtonWidth);
                 text-align: right;
                 padding: 5px 5px 5px 5px;
             }
@@ -172,9 +170,9 @@
                 border-radius: 30px;
                 color: black;
                 vertical-align: center;
-                height: 50px;
-                line-height: 50px;
-                font-size: 20px;
+                height: var(--RoundButtonHeight);
+                line-height: var(--RoundButtonHeight);
+                font-size: calc(0.4 * var(--RoundButtonHeight));
             }
             .pressable:hover { filter: brightness(120%); }
             .pressable:active { filter: brightness(82%); }
@@ -208,7 +206,7 @@
             /*****************************************************************
             ***** NUMBER SCROLLER WIDGET
             ******************************************************************/
-            #NumberScroller { color: var(--Purple01); padding: 15px; display: none;}
+            #NumberScroller { color: var(--Purple01); padding: 15px; }
             #NumberScroller .highlight1 { color: var(--Orange01); }
             #NumberScroller .highlight2 { color: var(--Purple02); }
 
