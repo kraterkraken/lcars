@@ -26,7 +26,7 @@
             ***** VARIABLES
             ******************************************************************/
             :root {
-              --LcarsUpperHeight: 220px;
+              --LcarsUpperHeight: 200px;
               --LcarsLowerHeight: 400px;
               --HorizDividerHeight: 15px;
               --UpperLowerSeparation: 10px;
@@ -85,12 +85,12 @@
             .BlackUpperArea {
                 display: grid;
                 grid-template-columns: 1fr var(--ButtonPanelWidth);
-                grid-template-rows: var(--TitleBlockHeight) var(--ButtonPanelHeight);
+                /* grid-template-rows: var(--TitleBlockHeight) var(--ButtonPanelHeight); */
                 /* grid-template-rows: var(--TitleBlockHeight) 1fr; */
             }
             .UpperContentPanel {
-                grid-row-start: 1;
-                grid-row-end: 3;
+                /* grid-row-start: 1;
+                grid-row-end: 3; */
             }
             .UpperButtonPanel {
                 display: grid;
@@ -163,11 +163,11 @@
                 height: var(--ButtonPanelHeight);
             }
             .TitleBlock {
-                position: relative;
+                /* position: relative; */
             }
             .TitleBlockText {
-                position: absolute;
-                bottom: 0px;
+                /* position: absolute;
+                bottom: 0px; */
                 color: var(--Orange02);
                 font-size: calc(0.6 * var(--TitleBlockHeight));
                 text-align: center;
@@ -482,7 +482,6 @@
 
         <div class="LcarsUpperArea">
             <div class="BlackUpperArea">
-                <div class="TitleBlock"><div class="TitleBlockText">LCARS ACCESS 24</div></div>
                 <div class="UpperContentPanel">
                     <!-- CONTENT GOES HERE ------------------------------------------->
                     <div id="NumberScroller" style="display:none;"></div>
@@ -520,16 +519,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="UpperButtonPanel">
-                    <button id="RdBtn1" class="roundbutton pressable"
-                        onclick="buttonHandler(this.id);">SW-52577</button>
-                    <button id="RdBtn2" class="roundbutton pressable"
-                        onclick="buttonHandler(this.id);">85-BTTF</button>
-                    <button id="RdBtn3" class="roundbutton pressable"
-                        onclick="buttonHandler(this.id);">CS-MDL101</button>
-                    <button id="RdBtn4" class="roundbutton pressable"
-                        onclick="buttonHandler(this.id);">DOMJOT-992</button>
+                <div>
+                    <div class="TitleBlock"><div class="TitleBlockText">LCARS ACCESS 24</div></div>
+                    <div class="UpperButtonPanel">
+                        <button id="RdBtn1" class="roundbutton pressable"
+                            onclick="buttonHandler(this.id);">SW-52577</button>
+                        <button id="RdBtn2" class="roundbutton pressable"
+                            onclick="buttonHandler(this.id);">85-BTTF</button>
+                        <button id="RdBtn3" class="roundbutton pressable"
+                            onclick="buttonHandler(this.id);">CS-MDL101</button>
+                        <button id="RdBtn4" class="roundbutton pressable"
+                            onclick="buttonHandler(this.id);">DOMJOT-992</button>
+                    </div>
                 </div>
+
             </div>
 
             <button id="UpperBtnA" class="sidebutton pressable"onclick="buttonHandler(this.id);">
