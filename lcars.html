@@ -33,10 +33,12 @@
               --CurlHeight: 80px;
               --BlackBoxRadius:30px;
               --UpperLowerSeparation: 10px;
-              --RoundButtonHeight: 50px;
 
               --GridGap: 5px;
 
+              --RoundButtonHeight: calc(var(--LcarsUpperHeight) * 0.23);
+              --TitleBlockHeight: calc(var(--LcarsUpperHeight) * 0.27);
+              --ButtonPanelHeight: calc(var(--RoundButtonHeight)*2 + var(--GridGap)*3);
               --ButtonPanelWidth: 280px;
               --SideButtonWidth: 100px;
 
@@ -81,6 +83,7 @@
             .BlackUpperArea {
                 display: grid;
                 grid-template-columns: 1fr var(--ButtonPanelWidth);
+                grid-template-rows: var(--TitleBlockHeight) var(--ButtonPanelHeight);
             }
             .UpperContentPanel {
                 grid-row-start: 1;
@@ -152,6 +155,9 @@
                 padding: 5px 5px 5px 5px;
             }
             .UpperContentPanel { margin: auto; }
+            .UpperButtonPanel {
+                height: var(--ButtonPanelHeight);
+            }
             .TitleBlock {
                 color: var(--Orange02);
                 font-size: 40px;
