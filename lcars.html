@@ -26,21 +26,23 @@
             ***** VARIABLES
             ******************************************************************/
             :root {
-              --HorizDividerHeight: 15px;
               --LcarsUpperHeight: 220px;
               --LcarsLowerHeight: 400px;
+              --HorizDividerHeight: 15px;
+              --UpperLowerSeparation: 10px;
               --CurlRadius: 80px;
               --CurlHeight: 80px;
               --BlackBoxRadius:30px;
-              --UpperLowerSeparation: 10px;
-
-              --GridGap: 5px;
-
-              --RoundButtonHeight: calc(var(--LcarsUpperHeight) * 0.23);
-              --TitleBlockHeight: calc(var(--LcarsUpperHeight) * 0.27);
-              --ButtonPanelHeight: calc(var(--RoundButtonHeight)*2 + var(--GridGap)*3);
               --ButtonPanelWidth: 280px;
               --SideButtonWidth: 100px;
+              --GridGap: 5px;
+              --StandardPad: 10px;
+
+              --BlackUpperAreaHeight: calc(var(--LcarsUpperHeight) - var(--HorizDividerHeight));
+              --BlackLowerAreaHeight: calc(var(--LcarsLowerHeight) - var(--HorizDividerHeight));
+              --TitleBlockHeight: calc(var(--BlackUpperAreaHeight) * 0.27);
+              --ButtonPanelHeight: calc(var(--BlackUpperAreaHeight) - var(--TitleBlockHeight) - 2*var(--StandardPad));
+              --RoundButtonHeight: calc((var(--ButtonPanelHeight) - var(--GridGap)) / 2);
 
               --Purple01: #cc99cc;
               --BrightPurple01: #f5b8f5;
@@ -84,6 +86,7 @@
                 display: grid;
                 grid-template-columns: 1fr var(--ButtonPanelWidth);
                 grid-template-rows: var(--TitleBlockHeight) var(--ButtonPanelHeight);
+                /* grid-template-rows: var(--TitleBlockHeight) 1fr; */
             }
             .UpperContentPanel {
                 grid-row-start: 1;
@@ -94,7 +97,6 @@
                 grid-template-columns: 1fr 1fr;
                 grid-row-gap: var(--GridGap);
                 grid-column-gap: calc(2 * var(--GridGap));
-                padding: 0px 0px 15px 0px;
             }
 
             /*****************************************************************
@@ -131,12 +133,14 @@
             .BlackUpperArea {
                 border-radius: 0px 0px 0px var(--BlackBoxRadius);
                 top: 0px;
-                height: calc(var(--LcarsUpperHeight) - var(--HorizDividerHeight));
+                height: var(--BlackUpperAreaHeight);
+                padding-top: 10px;
+                padding-bottom: 10px;
             }
             .BlackLowerArea {
                 border-radius: var(--BlackBoxRadius) 0px 0px 0px;
                 top: var(--HorizDividerHeight);
-                height: calc(var(--LcarsLowerHeight) - var(--HorizDividerHeight));
+                height: var(--BlackLowerAreaHeight);
             }
             .UpperCurl {
                 border-radius: 0px 0px 0px var(--CurlRadius);
@@ -160,7 +164,7 @@
             }
             .TitleBlock {
                 color: var(--Orange02);
-                font-size: 40px;
+                font-size: calc(0.7 * var(--TitleBlockHeight));
                 text-align: center;
             }
 
@@ -182,7 +186,8 @@
                 vertical-align: center;
                 height: var(--RoundButtonHeight);
                 line-height: var(--RoundButtonHeight);
-                font-size: calc(0.4 * var(--RoundButtonHeight));
+
+                font-size: calc(0.35 * var(--RoundButtonHeight));
             }
             .pressable:hover { filter: brightness(120%); }
             .pressable:active { filter: brightness(82%); }
