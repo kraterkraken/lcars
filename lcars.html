@@ -5,7 +5,9 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Antonio">
         <style>
 
-            /********** CSS RESET **********/
+        /*****************************************************************
+        ***** CSS RESET
+        ******************************************************************/
             html {
                 box-sizing: border-box;
                 background-color: black;
@@ -20,7 +22,9 @@
                 color: white;
             }
 
-            /********** VARIABLES **********/
+            /*****************************************************************
+            ***** VARIABLES
+            ******************************************************************/
             :root {
               --HorizDividerHeight: 15px;
               --LcarsUpperHeight: 220px;
@@ -47,7 +51,9 @@
 
             }
 
-            /********** GRID STUFF **********/
+            /*****************************************************************
+            ***** GRID STUFF
+            ******************************************************************/
             .LcarsUpperArea {
                 display: grid;
                 grid-template-columns: var(--SideButtonWidth) 38% 2% 15% 5% 1fr;
@@ -86,7 +92,9 @@
                 padding: 15px 0px 15px 0px;
             }
 
-            /*********** STYLING **********/
+            /*****************************************************************
+            ***** POSITION, SIZE, ALIGNMENT, ETC
+            ******************************************************************/
             body {
                 min-width: 950px;;
             }
@@ -107,18 +115,12 @@
                 background-color: black;
                 margin: auto;
             }
-
             .BlackUpperArea, .BlackLowerArea {
                 background-color: black;
                 position: absolute;
                 z-index: 99;
                 width: calc(100% - var(--SideButtonWidth));
                 left: var(--SideButtonWidth);
-                text-align: center;
-            }
-            .TitleBlock {
-                color: var(--Orange02);
-                font-size: 40px;
                 text-align: center;
             }
             .BlackUpperArea {
@@ -130,6 +132,28 @@
                 border-radius: var(--BlackBoxRadius) 0px 0px 0px;
                 top: var(--HorizDividerHeight);
                 height: calc(var(--LcarsLowerHeight) - var(--HorizDividerHeight));
+            }
+            .UpperCurl {
+                border-radius: 0px 0px 0px var(--CurlRadius);
+                position: relative;
+            }
+            .LowerCurl {
+                border-radius: var(--CurlRadius) 0px 0px 0px;
+            }
+            #UpperCurlText {
+                text-align: right;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 100px;
+                text-align: right;
+                padding: 5px 5px 5px 5px;
+            }
+            .UpperContentPanel { margin: auto; }
+            .TitleBlock {
+                color: var(--Orange02);
+                font-size: 40px;
+                text-align: center;
             }
 
             .sidebutton {
@@ -144,7 +168,6 @@
                 font-size: 13px;
                 padding: 5px 5px 5px 5px;
             }
-
             .roundbutton {
                 border-radius: 30px;
                 color: black;
@@ -156,30 +179,22 @@
             .pressable:hover { filter: brightness(120%); }
             .pressable:active { filter: brightness(82%); }
 
+            /*****************************************************************
+            ***** COLORS
+            ******************************************************************/
             #RdBtn1 { background-color: var(--Purple01); }
             #RdBtn2 { background-color: var(--Orange01); }
             #RdBtn3 { background-color: var(--Orange02); }
             #RdBtn4 { background-color: var(--Pink01); }
-
             #UpperBtnA { background-color: var(--Purple01); }
-            .UpperCurl { background-color: var(--Purple02); border-radius: 0px 0px 0px var(--CurlRadius);
-                position: relative;
-            }
-            #UpperCurlText { color: black; text-align: right;
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                width: 100px;
-                text-align: right;
-                padding: 5px 5px 5px 5px;
-                }
+            .UpperCurl { background-color: var(--Purple02); }
+            #UpperCurlText { color: black; }
             .UpperDividerA { background-color: var(--Orange01); }
             .UpperDividerB { background-color: var(--Pink01); }
             .UpperDividerC { background-color: var(--Purple01); }
             .UpperDividerD { background-color: var(--Purple01); }
             .UpperDividere { background-color: var(--Purple01); }
-
-            .LowerCurl { background-color: var(--Pink01); border-radius: var(--CurlRadius) 0px 0px 0px; }
+            .LowerCurl { background-color: var(--Pink01); }
             .LowerDividerA { background-color: var(--Orange01); }
             .LowerDividerB { background-color: var(--Purple02); }
             .LowerDividerC { background-color: var(--Purple01); }
@@ -190,12 +205,16 @@
             #LowerBtnD { background-color: var(--Orange01); }
             #LowerBtnE { background-color: var(--Purple02); }
 
-            .UpperContentPanel { margin: auto;}
-
+            /*****************************************************************
+            ***** NUMBER SCROLLER WIDGET
+            ******************************************************************/
             #NumberScroller { color: var(--Purple01); padding: 15px; display: none;}
             #NumberScroller .highlight1 { color: var(--Orange01); }
             #NumberScroller .highlight2 { color: var(--Purple02); }
 
+            /*****************************************************************
+            ***** WARP CORE WIDGET
+            ******************************************************************/
             @keyframes WarpCoreLeftArrow {
                 from { top: 0px; color: var(--Pink01); }
                 to { top: 35px; color: white; }
