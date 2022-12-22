@@ -410,17 +410,18 @@
                         break;
                 }
             }
-
+            function playMovie(movie)
+            {
+                player.loadVideoById(movie, 0, "large");
+            }
             function buttonHandler(id) {
-                let movie;
                 switch(id) {
-                    case "RdBtn1": movie=VIDZ[0]; break;
-                    case "RdBtn2": movie=VIDZ[1]; break;
-                    case "RdBtn3": movie=VIDZ[2]; break;
-                    case "RdBtn4": movie=VIDZ[3]; break;
+                    case "RdBtn1": playMovie(VIDZ[0]); break;
+                    case "RdBtn2": playMovie(VIDZ[1]); break;
+                    case "RdBtn3": playMovie(VIDZ[2]); break;
+                    case "RdBtn4": playMovie(VIDZ[3]); break;
                     case "UpperBtnA": changeUpperDisplay(); break;
                 }
-                player.loadVideoById(movie, 0, "large");
             }
             function rand5() {
                 return Math.round(89999 * Math.random() + 10000);
