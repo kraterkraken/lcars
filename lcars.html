@@ -352,6 +352,99 @@
                 color: var(--Purple02);
             }
 
+            /*****************************************************************
+            ***** SICK BAY / MEDICAL BED WIDGETS
+            ******************************************************************/
+            #SickBay {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: 1fr 1fr;
+                grid-gap: 15px;
+                height: 160px;
+            }
+            .bed {
+                border: 2px solid var(--Orange01);
+                border-radius: 5px;
+                font-size: 10px;
+                color: var(--Purple01);
+                padding: 3px 3px 3px 3px;
+            }
+            #bedDetail {
+                border-radius: 15px;
+                font-size: 35px;
+                width: 180px;
+            }
+            .humanoid_container_sm {
+                --ContainerHeight: 50px;
+                --ContainerOutlineWidth: 2px;
+            }
+            .humanoid_container_lg {
+                --ContainerHeight: var(--BlackLowerAreaHeight);
+                --ContainerOutlineWidth: 4px;
+            }
+            .humanoid, .humanoid * {
+                --Height: var(--ContainerHeight);
+                --OutlineWidth: var(--ContainerOutlineWidth);
+                --OutlineColor: cyan;
+                --BgColor: black;
+                --BodyColor: black;
+                --Width: calc( 0.4 * var(--Height) );
+                --HeadSize: calc( 0.2 * var(--Height) );
+                --LimbHeight: calc( 0.4 * var(--Height) );
+                --LimbWidth: calc( 0.08 * var(--Height) );
+                --ArmpitOffset: calc( 0.08 * var(--Height) ) ;
+                --ShoulderRadius: calc( 0.04 * var(--Height) );
+                --TorsoHeight: calc( 0.8 * var(--LimbHeight) );
+                --TorsoWidth: calc( 3 * var(--LimbWidth) );
+            }
+            .humanoid {
+                background-color: var(--BgColor);
+                height: var(--Height);
+                width: var(--Width);
+            }
+            .humanoid .head {
+                background-color: var(--BodyColor);
+                height: var(--HeadSize);
+                width: var(--HeadSize);
+                border-radius: var(--HeadSize);
+                margin-right: auto;
+                margin-left: auto;
+                border: var(--OutlineWidth) dotted var(--OutlineColor);
+            }
+            .humanoid .arms {
+                background-color: var(--BodyColor);
+                height: var(--LimbHeight);
+                width: var(--LimbHeight);
+                padding-top: var(--ArmpitOffset);
+                border-width: var(--OutlineWidth) var(--OutlineWidth) 0px var(--OutlineWidth);
+                border-color: var(--OutlineColor);
+                border-style: dotted;
+                border-radius: var(--ShoulderRadius) var(--ShoulderRadius) 0px 0px;
+            }
+            .humanoid .torso {
+                background-color: var(--BodyColor);
+                height: var(--TorsoHeight);
+                width: var(--TorsoWidth);
+                margin-left: auto;
+                margin-right: auto;
+                border-width: 0px var(--OutlineWidth) 0px var(--OutlineWidth);
+                border-color: var(--OutlineColor);
+                border-style: dotted;
+            }
+            .humanoid .legs {
+                display: grid;
+                grid-template-columns: repeat(5, var(--LimbWidth));
+                height: var(--LimbHeight);
+            }
+            .humanoid .legs .leg {
+                background-color: var(--BodyColor);
+                border-width: 0px var(--OutlineWidth) var(--OutlineWidth) var(--OutlineWidth);
+                border-color: var(--OutlineColor);
+                border-style: dotted;
+            }
+            .humanoid .legs .blank {
+                background-color: var(--BgColor);
+           }
 
         </style>
         <script>
@@ -405,24 +498,41 @@
             ////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////
 
+            function sickBayStats(){
+                let bed = document.getElementById("bedDetail");
+                let player = document.getElementById("player");
+                bed.style.display = "block";
+                player.style.display = "none";
+            }
+
             function changeUpperDisplay() {
                 let label = document.getElementById("UpperCurlText");
+                let sickbay = document.getElementById("SickBay");
                 let warpCore = document.getElementById("WarpCore");
                 let numberScroller = document.getElementById("NumberScroller");
                 switch(label.innerHTML) {
                     case "":
                         numberScroller.style.display = "block";
                         warpCore.style.display = "none";
+                        sickbay.style.display = "none";
                         label.innerHTML = "DATA NODE T7";
                         break;
                     case "DATA NODE T7":
                         numberScroller.style.display = "none";
                         warpCore.style.display = "";
+                        sickbay.style.display = "none";
                         label.innerHTML = "WARP CORE";
                         break;
                     case "WARP CORE":
                         numberScroller.style.display = "none";
                         warpCore.style.display = "none";
+                        sickbay.style.display = "grid";
+                        label.innerHTML = "SICKBAY";
+                        break;
+                    case "SICKBAY":
+                        numberScroller.style.display = "none";
+                        warpCore.style.display = "none";
+                        sickbay.style.display = "none";
                         label.innerHTML = "";
                         break;
                 }
@@ -518,6 +628,34 @@
                             <span class="dashes">-</span> 0.30<br>
                         </div>
                     </div>
+                    <div id="SickBay" style="display:none;">
+                        <div class="bed">BED 01</div>
+                        <div class="bed">BED 02</div>
+                        <div class="bed">BED 03</div>
+                        <div class="bed pressable" onclick="sickBayStats();">
+                            BED 04<br>
+                            <div class="humanoid_container_sm">
+                                <div class="humanoid">
+                                    <div class="head"></div>
+                                    <div class="arms">
+                                        <div class="torso"></div>
+                                    </div>
+                                    <div class="legs">
+                                        <div class="blank"></div>
+                                        <div class="leg"></div>
+                                        <div class="blank"></div>
+                                        <div class="leg"></div>
+                                        <div class="blank"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bed">BED 05</div>
+                        <div class="bed">BED 06</div>
+                        <div class="bed">BED 07</div>
+                        <div class="bed">BED 08</div>
+                    </div>
+
                 </div>
                 <div>
                     <div class="TitleBlock"><div class="TitleBlockText">LCARS ACCESS 24</div></div>
@@ -550,6 +688,25 @@
             <div id="BlackLowerArea" class="BlackLowerArea">
                 <!-- CONTENT GOES HERE ------------------------------------------->
                 <div id='player' ></div>
+                <div id="bedDetail" class="bed" style="display:none">
+                    BED 04<br>
+                    <div class="humanoid_container_lg">
+                        <div class="humanoid">
+                            <div class="head"></div>
+                            <div class="arms">
+                                <div class="torso"></div>
+                            </div>
+                            <div class="legs">
+                                <div class="blank"></div>
+                                <div class="leg"></div>
+                                <div class="blank"></div>
+                                <div class="leg"></div>
+                                <div class="blank"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 
