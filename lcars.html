@@ -372,15 +372,18 @@
             #bedDetail {
                 border-radius: 15px;
                 font-size: 35px;
-                width: 180px;
+                margin-top: 15px;
+                margin-left: 30px;
+                width: 160px;
             }
             .humanoid_container_sm {
                 --ContainerHeight: 50px;
                 --ContainerOutlineWidth: 2px;
             }
             .humanoid_container_lg {
-                --ContainerHeight: var(--BlackLowerAreaHeight);
+                --ContainerHeight: calc( 0.7 * var(--BlackLowerAreaHeight) );
                 --ContainerOutlineWidth: 4px;
+                padding: 6px 6px 6px 6px;
             }
             .humanoid, .humanoid * {
                 --Height: var(--ContainerHeight);
@@ -401,6 +404,7 @@
                 background-color: var(--BgColor);
                 height: var(--Height);
                 width: var(--Width);
+                margin: 0 auto;
             }
             .humanoid .head {
                 background-color: var(--BodyColor);
@@ -689,7 +693,7 @@
                 <!-- CONTENT GOES HERE ------------------------------------------->
                 <div id='player' ></div>
                 <div id="bedDetail" class="bed" style="display:none">
-                    BED 04<br>
+                    <div>BED 04</div>
                     <div class="humanoid_container_lg">
                         <div class="humanoid">
                             <div class="head"></div>
