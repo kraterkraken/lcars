@@ -362,20 +362,25 @@
                 grid-gap: 15px;
                 height: 160px;
             }
-            .bed {
+            .bed_sm {
                 border: 2px solid var(--Orange01);
                 border-radius: 5px;
                 font-size: 10px;
                 color: var(--Purple01);
                 padding: 3px 3px 3px 3px;
             }
-            #bedDetail {
+            .bed_lg {
                 border: 4px solid var(--Orange01);
                 border-radius: 15px;
                 font-size: 35px;
-                margin-top: 15px;
-                margin-left: 30px;
                 width: 160px;
+            }
+
+            #bedDetail {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                padding-top: 15px;
+                padding-left: 30px;
             }
             .humanoid_container_sm {
                 --ContainerHeight: 50px;
@@ -504,9 +509,9 @@
             ////////////////////////////////////////////////////////////////////
 
             function sickBayStats(){
-                let bed = document.getElementById("bedDetail");
+                let bedDetail = document.getElementById("bedDetail");
                 let player = document.getElementById("player");
-                bed.style.display = "block";
+                bedDetail.style.display = "grid";
                 player.style.display = "none";
             }
 
@@ -634,10 +639,10 @@
                         </div>
                     </div>
                     <div id="SickBay" style="display:none;">
-                        <div class="bed">BED 01</div>
-                        <div class="bed">BED 02</div>
-                        <div class="bed">BED 03</div>
-                        <div class="bed pressable" onclick="sickBayStats();">
+                        <div class="bed_sm">BED 01</div>
+                        <div class="bed_sm">BED 02</div>
+                        <div class="bed_sm">BED 03</div>
+                        <div class="bed_sm pressable" onclick="sickBayStats();">
                             BED 04<br>
                             <div class="humanoid_container_sm">
                                 <div class="humanoid">
@@ -655,10 +660,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bed">BED 05</div>
-                        <div class="bed">BED 06</div>
-                        <div class="bed">BED 07</div>
-                        <div class="bed">BED 08</div>
+                        <div class="bed_sm">BED 05</div>
+                        <div class="bed_sm">BED 06</div>
+                        <div class="bed_sm">BED 07</div>
+                        <div class="bed_sm">BED 08</div>
                     </div>
 
                 </div>
@@ -693,22 +698,30 @@
             <div id="BlackLowerArea" class="BlackLowerArea">
                 <!-- CONTENT GOES HERE ------------------------------------------->
                 <div id='player' ></div>
-                <div id="bedDetail" class="bed" style="display:none">
-                    <div>BED 04</div>
-                    <div class="humanoid_container_lg">
-                        <div class="humanoid">
-                            <div class="head"></div>
-                            <div class="arms">
-                                <div class="torso"></div>
-                            </div>
-                            <div class="legs">
-                                <div class="blank"></div>
-                                <div class="leg"></div>
-                                <div class="blank"></div>
-                                <div class="leg"></div>
-                                <div class="blank"></div>
+                <div id="bedDetail" style="display:none">
+                    <div class="bed_lg">
+                        <div>BED 04</div>
+                        <div class="humanoid_container_lg">
+                            <div class="humanoid">
+                                <div class="head"></div>
+                                <div class="arms">
+                                    <div class="torso"></div>
+                                </div>
+                                <div class="legs">
+                                    <div class="blank"></div>
+                                    <div class="leg"></div>
+                                    <div class="blank"></div>
+                                    <div class="leg"></div>
+                                    <div class="blank"></div>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div style="text-align: left;">PATIENT: LT CDR HUDSON<br>
+                        CONDITION: CRITICAL<br>
+                        DIAGNOSIS 1: L SHOULDER - DISRUPTOR BURN, 3RD DEG<br>
+                        DIAGNOSIS 2: LOWER R ABDOMEN - BLUNT FORCE TRAUMA, INTERNAL BLEEDING<br>
+                        CAUSE: VIOLENT ENCOUNTER WITH ROMULAN<br>
                     </div>
                 </div>
 
