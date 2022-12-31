@@ -374,6 +374,7 @@
                 border-radius: 15px;
                 font-size: 35px;
                 width: 160px;
+                position: relative;
             }
 
             #bedDetail {
@@ -487,6 +488,30 @@
            .healthStatus .cause {
                background-color: var(--Orange01);
            }
+           @keyframes injuryPulse {
+               from {
+                   transform: scale(1);
+               }
+               to {
+                   transform: scale(1.33);
+               }
+           }
+           #injury {
+               position: absolute;
+               width: 20px;
+               height: 20px;
+               background-color: #ff4d4d;
+               border-radius: 50px;
+               opacity: 0.53;
+               /* top: 30%;
+               left: 76%; */
+               top: 50%;
+               left: 30%;
+               animation-name: injuryPulse;
+               animation-duration: 0.5s;
+               animation-iteration-count: infinite;
+               animation-direction: alternate;
+           }
 
         </style>
         <script>
@@ -540,6 +565,20 @@
             ////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////
 
+            function highlightInjury(id) {
+                let injury = document.getElementById("injury");
+                injury.style.display = "block";
+                switch (id) {
+                    case "injury1":
+                        injury.style.left = "76%";
+                        injury.style.top = "30%";
+                        break;
+                    case "injury2":
+                        injury.style.left = "30%";
+                        injury.style.top = "50%";
+                        break;
+                }
+            }
             function sickBayStats(){
                 let bedDetail = document.getElementById("bedDetail");
                 let player = document.getElementById("player");
@@ -732,6 +771,7 @@
                 <div id='player' ></div>
                 <div id="bedDetail" style="display:none">
                     <div class="bed_lg">
+                        <div id="injury" style="display:none;"></div>
                         <div>BED 04</div>
                         <div class="humanoid_container_lg">
                             <div class="humanoid">
@@ -753,8 +793,14 @@
                         <tbody>
                             <tr><th>PATIENT</th><td class="patient">LT CDR HUDSON</td></tr>
                             <tr><th>CONDITION</th><td class="condition">CRITICAL</td></tr>
-                            <tr><th>DIAGNOSIS</th><td class="diagnosis">L SHOULDER - DISRUPTOR BURN, 3RD DEG</td></tr>
-                            <tr><th>DIAGNOSIS</th><td class="diagnosis">LOWER R ABDOMEN - BLUNT FORCE TRAUMA, INTERNAL BLEEDING</td></tr>
+                            <tr><th>DIAGNOSIS</th><td id="injury1" class="diagnosis pressable"
+                                onmouseout="document.getElementById('injury').style.display='none';"
+                                onmouseover="highlightInjury(this.id);">
+                                DISRUPTOR BURN, 3RD DEG</td></tr>
+                            <tr><th>DIAGNOSIS</th><td id="injury2" class="diagnosis pressable"
+                                onmouseout="document.getElementById('injury').style.display='none';"
+                                onmouseover="highlightInjury(this.id);">
+                                BLUNT FORCE TRAUMA, INTERNAL BLEEDING</td></tr>
                             <tr><th>CAUSE</th><td class="cause">VIOLENT ENCOUNTER WITH ROMULAN</td></tr>
                         </tbody>
                     </table>
