@@ -378,7 +378,7 @@
 
             #bedDetail {
                 display: grid;
-                grid-template-columns: 1fr 65%;
+                grid-template-columns: 180px 1fr;
                 padding-top: 15px;
                 padding-left: 30px;
             }
@@ -454,6 +454,38 @@
             }
             .humanoid .legs .blank {
                 background-color: var(--BgColor);
+           }
+           .healthstatus {
+               width: 500px;
+           }
+           .healthStatus * {
+               padding-left: 10px;
+               padding-right: 10px;
+           }
+           .healthStatus th {
+               background-color: black;
+               color: var(--Purple01);
+               font-size: 40px;
+               text-align: right;
+           }
+           .healthStatus td {
+               color: black;
+               font-size: 25px;
+               border-radius: 0px 50px 50px 0px;
+               text-align: left;
+           }
+           .healthStatus .patient {
+               background-color: var(--Orange02);
+               font-size: 35px;
+           }
+           .healthStatus .condition {
+               background-color: var(--Purple02);
+           }
+           .healthStatus .diagnosis {
+               background-color: var(--Pink01);
+           }
+           .healthStatus .cause {
+               background-color: var(--Orange01);
            }
 
         </style>
@@ -717,12 +749,15 @@
                             </div>
                         </div>
                     </div>
-                    <div style="text-align: left;">PATIENT: LT CDR HUDSON<br>
-                        CONDITION: CRITICAL<br>
-                        DIAGNOSIS 1: L SHOULDER - DISRUPTOR BURN, 3RD DEG<br>
-                        DIAGNOSIS 2: LOWER R ABDOMEN - BLUNT FORCE TRAUMA, INTERNAL BLEEDING<br>
-                        CAUSE: VIOLENT ENCOUNTER WITH ROMULAN<br>
-                    </div>
+                    <table class="healthStatus">
+                        <tbody>
+                            <tr><th>PATIENT</th><td class="patient">LT CDR HUDSON</td></tr>
+                            <tr><th>CONDITION</th><td class="condition">CRITICAL</td></tr>
+                            <tr><th>DIAGNOSIS</th><td class="diagnosis">L SHOULDER - DISRUPTOR BURN, 3RD DEG</td></tr>
+                            <tr><th>DIAGNOSIS</th><td class="diagnosis">LOWER R ABDOMEN - BLUNT FORCE TRAUMA, INTERNAL BLEEDING</td></tr>
+                            <tr><th>CAUSE</th><td class="cause">VIOLENT ENCOUNTER WITH ROMULAN</td></tr>
+                        </tbody>
+                    </table>
                 </div>
 
 
