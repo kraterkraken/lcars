@@ -580,10 +580,8 @@
                 }
             }
             function sickBayStats(){
-                let bedDetail = document.getElementById("bedDetail");
-                let player = document.getElementById("player");
-                bedDetail.style.display = "grid";
-                player.style.display = "none";
+                document.getElementById("bedDetail").style.display = "grid";
+                document.getElementById("playerContainer").style.display = "none";
             }
 
             function changeUpperDisplay() {
@@ -620,6 +618,8 @@
             }
             function playMovie(movie)
             {
+                document.getElementById("playerContainer").style.display = "block";
+                document.getElementById("bedDetail").style.display = "none";
                 player.loadVideoById(movie, 0, "large");
             }
             function buttonHandler(id) {
@@ -768,7 +768,7 @@
         <div class="LcarsLowerArea">
             <div id="BlackLowerArea" class="BlackLowerArea">
                 <!-- CONTENT GOES HERE ------------------------------------------->
-                <div id='player' ></div>
+                <div id="playerContainer"><div id='player' ></div></div>
                 <div id="bedDetail" style="display:none">
                     <div class="bed_lg">
                         <div id="injury" style="display:none;"></div>
